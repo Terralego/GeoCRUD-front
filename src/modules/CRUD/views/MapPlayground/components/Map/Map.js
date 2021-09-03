@@ -147,7 +147,6 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
 
     const {
       layer: { id: layerId },
-      pictogram,
     } = view;
 
     if (sources.find(source => source.id === `${layerId}`) && layers.filter(({ source }) => source === `${layerId}`)) {
@@ -163,11 +162,18 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
       .filter(({ source }) => source === `${layerId}`)
       .map(nextLayer => ({ ...nextLayer, weight: CUSTOM_LAYER_WEIGHT }));
 
-    nextLayers.forEach(({ layout: { 'icon-image': iconImage } = {} }) => {
-      if (iconImage) {
-        map.loadImage(pictogram, (error, image) => {
-          if (error) throw error;
-          map.addImage(iconImage, image);
+    nextLayers.forEach(({ iconList }) => {
+      if (iconList) {
+        iconList.forEach(({ label, url }) => {
+          if (map.hasImage(label)) {
+            return;
+          }
+          map.loadImage(url, (error, image) => {
+            if (error) {
+              throw error;
+            }
+            map.addImage(label, image);
+          });
         });
       }
     });
