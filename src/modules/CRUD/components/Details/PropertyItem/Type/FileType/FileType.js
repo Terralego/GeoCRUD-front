@@ -2,15 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import NoValue from '../../NoValue';
 
-const getFileName = src => {
-  return decodeURIComponent(src.split('/').pop());
-};
+const getFileName = src => decodeURIComponent(src.split('/').pop());
 
-const FileType = ({
-  display_value: { url, thumbnail },
-  schema: { title },
-  type,
-}) => {
+const FileType = ({ display_value: { url, thumbnail }, schema: { title }, type }) => {
   if (!url) {
     return <NoValue />;
   }
@@ -22,12 +16,7 @@ const FileType = ({
   }
 
   return (
-    <a
-      key={url}
-      href={url}
-      rel="download noopener noreferrer"
-      target="_blank"
-    >
+    <a key={url} href={url} rel="download noopener noreferrer" target="_blank">
       {text}
     </a>
   );

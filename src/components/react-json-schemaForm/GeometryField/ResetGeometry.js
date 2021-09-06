@@ -70,7 +70,7 @@ const ResetGeometry = ({
 ResetGeometry.propTypes = {
   schema: PropTypes.shape({
     default: PropTypes.shape({
-      coordinates: PropTypes.array,
+      coordinates: PropTypes.arrayOf(PropTypes.number),
     }),
   }),
 };

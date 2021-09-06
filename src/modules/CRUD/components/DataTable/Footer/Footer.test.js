@@ -27,7 +27,11 @@ jest.mock('@blueprintjs/core', () => ({
   NavbarGroup: ({ children, ...props }) => <div {...props}>{children}</div>,
   HTMLSelect: ({ options, ...props }) => (
     <select {...props}>
-      {options.map(item => <option key={item} value={item}>{item}</option>)}
+      {options.map(item => (
+        <option key={item} value={item}>
+          {item}
+        </option>
+      ))}
     </select>
   ),
 }));
@@ -39,6 +43,7 @@ beforeEach(() => {
     featuresList: { count: 10, previous: '1', next: '3' },
     onPageChange: () => {},
     tableFilters: {
+      page: 2,
       page_size: 10,
     },
     querystring: {},
@@ -47,21 +52,14 @@ beforeEach(() => {
 
 describe('Snapshots', () => {
   it('should render correctly', () => {
-    const tree = renderer.create((
-      <Footer
-        {...props}
-      />
-    )).toJSON();
+    const tree = renderer.create(<Footer {...props} />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('should not render anything', () => {
-    const tree = renderer.create((
-      <Footer
-        {...props}
-        featuresList={{ count: 10, previous: null, next: null }}
-      />
-    )).toJSON();
+    const tree = renderer
+      .create(<Footer {...props} featuresList={{ count: 10, previous: null, next: null }} />)
+      .toJSON();
     expect(tree).toMatchSnapshot();
   });
 });

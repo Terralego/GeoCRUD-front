@@ -65,7 +65,7 @@ Read.propTypes = {
   displayViewFeature: PropTypes.bool,
   feature: PropTypes.shape({
     title: PropTypes.string,
-    documents: PropTypes.array,
+    documents: PropTypes.arrayOf(PropTypes.shape({})),
     display_properties: PropTypes.shape({}),
   }),
   t: PropTypes.func,

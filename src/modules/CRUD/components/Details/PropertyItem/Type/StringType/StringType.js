@@ -14,14 +14,15 @@ const StringType = ({ display_value: displayValue }) => {
         details__RTE: isHTML(displayValue),
         details__text: !isHTML(displayValue),
       })}
-    // eslint-disable-next-line react/no-danger
+      // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: displayValue }}
     />
   );
 };
 
 StringType.propTypes = {
-  display_value: PropTypes.string,
+  // eslint-disable-next-line react/forbid-prop-types
+  display_value: PropTypes.any,
 };
 
 StringType.defaultProps = {

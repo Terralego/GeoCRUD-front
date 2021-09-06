@@ -15,7 +15,7 @@ const GeometryType = ({ value }) => {
 
 GeometryType.propTypes = {
   value: PropTypes.shape({
-    coordinates: PropTypes.array,
+    coordinates: PropTypes.arrayOf(PropTypes.number),
   }),
 };
 

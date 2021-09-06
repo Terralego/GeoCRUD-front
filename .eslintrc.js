@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
-  extends: ['react-app', 'makina'],
+  extends: ['react-app', 'makina', 'prettier'],
 
   // Custom rules
   rules: {
@@ -9,6 +9,6 @@ module.exports = {
     'react/no-this-in-sfc': ['error'],
     'react/no-access-state-in-setstate': ['error'],
     'import/no-cycle': ['off'],
-    'space-before-function-paren': ['never'],
+    'space-before-function-paren': ['off'],
   },
 };

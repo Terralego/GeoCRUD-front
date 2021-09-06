@@ -46,7 +46,7 @@ const GeometryField = ({
 
 GeometryField.propTypes = {
   formData: PropTypes.shape({
-    coordinates: PropTypes.array,
+    coordinates: PropTypes.arrayOf(PropTypes.number),
     type: PropTypes.string,
   }),
   name: PropTypes.string,

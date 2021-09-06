@@ -53,7 +53,7 @@ exports[`Snapshots should render correctly 1`] = `
     </div>
     <div
       containerClassName="table-footer__pagination"
-      forcePage={NaN}
+      forcePage={1}
       marginPagesDisplayed={1}
       nextLabel="common.pagination.next"
       onPageChange={[Function]}

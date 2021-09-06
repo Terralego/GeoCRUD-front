@@ -76,7 +76,7 @@ ArrayOfObjects.propTypes = {
   }),
   ui_schema: PropTypes.shape({
     items: PropTypes.shape({
-      'ui:order': PropTypes.array,
+      'ui:order': PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.string])),
     }),
   }),
 };

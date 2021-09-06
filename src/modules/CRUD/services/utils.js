@@ -1,5 +1,4 @@
 import Api from '@terralego/core/modules/Api';
-import { geomTypes } from '../../../utils/geom';
 
 import {
   POINT,
@@ -9,6 +8,7 @@ import {
   MULTI_LINESTRING,
   MULTI_POLYGON,
   GEOMETRY_COLLECTION,
+  geomTypes,
 } from '../../../utils/geom';
 
 export const getObjectOrderedValue = (objectValues, arrayOrder = []) => {
@@ -150,7 +150,7 @@ export const requiredProperties = props => {
         const requiredProps = Object.entries(properties).reduce(
           (acc, [subKey, subValue]) =>
             required.includes(subKey) ? { ...acc, [subKey]: subValue } : acc,
-          {}
+          {},
         );
 
         return {
@@ -162,7 +162,7 @@ export const requiredProperties = props => {
 
       return list;
     },
-    { properties: {}, required: [] }
+    { properties: {}, required: [] },
   );
 
   return propertiesWithoutGroup;

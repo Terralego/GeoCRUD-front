@@ -52,11 +52,6 @@ exports[`should display menu when user is authenticated 1`] = `
     <div
       align="right"
     >
-      <a
-        href="/admin"
-      >
-        Admin
-      </a>
       <div />
     </div>
   </div>

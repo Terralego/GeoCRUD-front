@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/Terralego/GeoCRUD-front/branch/master/graph/badge.svg?token=FId8vWXrsc)](https://codecov.io/gh/Terralego/GeoCRUD-front)
+
 # GeoCRUD-front
 
 ## Install
