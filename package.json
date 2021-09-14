@@ -10,7 +10,7 @@
     "@rjsf/core": "^2.4.1",
     "@sentry/react": "^6.5.0",
     "@sentry/tracing": "^6.5.0",
-    "@terralego/core": "^1.27.7",
+    "@terralego/core": "^1.27.11",
     "@tmcw/togeojson": "^4.2.0",
     "@uppy/core": "^1.10.4",
     "@uppy/locales": "^1.13.3",
