@@ -32,7 +32,7 @@
   },
   "gl-pathControl": {
     "followDirection": "Suivre les voies",
-    "enableFollowDirectionMode": "Activer le suivi de voie",
+    "enableFollowDirectionMode": "Activer le suivi de voie: {{ theme }}",
     "disableFollowDirectionMode": "Désactiver le suivi de voie",
     "createPoint": "Créer un point",
     "createIntermediatePoint": "Créer un point intermédiaire",
