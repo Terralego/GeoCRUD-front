@@ -70,40 +70,102 @@
 }
 
 .mapbox-gl-path-container {
-  display: flex;
-  align-items: center;
+  float: left;
   pointer-events: auto;
   user-select: none;
   background-color: #ffffff;
   color: #182026;
-  padding: 4px 6px;
+  padding: 4px 8px;
   margin: 10px;
   border-radius: 4px;
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
-
-  input {
-    margin-right: 4px;
-  }
-
-  select {
-    margin-left: 8px;
-  }
 }
 
-.mapbox-gl-path-popup {
-  button {
-    appearance: none;
-  }
+.mapbox-gl-path-theme-selection__checkbox-label {
+  cursor: pointer;
+  padding-left: 5px;
 }
+
+.mapbox-gl-path-theme-selection {
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.3ms ease;
+}
+
+.mapboxgl-popup-content {
+  padding: 1.2rem 0.8rem 0.8rem !important;
+}
+
 .mapboxgl-popup-close-button {
-  @include pt-button-base();
-  & + button {
-    margin-top: 1.3rem;
-  }
+  padding: 0 0.5rem;
 }
+
 .mapbox-gl-path-popup-button {
+  appearance: none;
+  cursor: pointer;
+  display: block;
+  border: none;
   margin: 0.3rem 0;
-  @include pt-button-base();
-  @include pt-button-height($pt-button-height);
-  @include pt-button();
+  background: transparent;
+  font-size: 0.8rem;
+  text-align: left;
+}
+
+.mapbox-gl-path-popup-button:hover,
+.mapbox-gl-path-popup-button:focus {
+  color: #000;
+  text-decoration: underline;
+  border: 0;
+}
+
+.mapbox-gl-path-popup-button::before {
+  float: left;
+  margin-top: -0.1rem;
+  margin-right: 0.2rem;
+  vertical-align: middle;
+}
+
+.mapbox-gl-path-popup-delete::before {
+  content: url("./icons/delete-point.svg");
+}
+
+.mapbox-gl-path-popup-createPointOnLine::before {
+  content: url("./icons/create-point.svg");
+}
+
+.mapbox-gl-path-popup-createIntermediatePointOnLine::before {
+  content: url("./icons/create-intermediate-point.svg");
+}
+
+.mapbox-gl-path-popup-loop::before {
+  content: url("./icons/loop.svg");
+}
+
+.mapbox-gl-path-popup-oneWay::before {
+  content: url("./icons/un-loop.svg");
+}
+
+.mapbox-gl-path-popup-disableFollowDirectionMode::before {
+  content: url("./icons/un-follow-direction.svg");
+}
+
+.mapbox-gl-path-popup-enableFollowDirectionMode::before {
+  content: url("./icons/follow-direction.svg");
+}
+
+.mapbox-gl-path-theme-selection__checkbox:checked
+  ~ .mapbox-gl-path-theme-selection {
+  height: auto;
+  padding: 0.3rem 0;
+  opacity: 1;
+  margin: 0.6rem 0 0;
+  border-top: 1px solid #eaeaea;
+}
+
+
+.mapbox-gl-path-theme-selection__radio-label {
+  margin: 0.2rem 0.5rem;
+  display: inline-block;
+  cursor: pointer;
 }

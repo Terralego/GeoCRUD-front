@@ -32,7 +32,7 @@
   },
   "gl-pathControl": {
     "followDirection": "Follow direction",
-    "enableFollowDirectionMode": "Enable direction",
+    "enableFollowDirectionMode": "Enable direction: {{ theme }}",
     "disableFollowDirectionMode": "Disable direction",
     "createPoint": "Create point",
     "createIntermediatePoint": "Create intermediate point",
