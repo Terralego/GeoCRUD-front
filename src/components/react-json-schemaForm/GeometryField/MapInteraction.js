@@ -208,44 +208,50 @@ const MapInteraction = () => {
     if (!map) {
       return () => null;
     }
-    const {
-      geom: geometry,
-      identifier,
-      layerName,
-      routingInformation,
-    } = geomValues;
+    const { geom: geometry, identifier, layerName, routingInformation } = geomValues;
 
     const layerId = getLayerId(layers, layerName);
 
+    const control = getRoutingConfiguration();
+
     const onDrawControlAdded = () => {
       map.off('control_DrawControl_added', onDrawControlAdded);
-      if (identifier) {
-        map.setFilter(layerId, ['!=', '_id', identifier]);
-      }
-      if (map.draw) {
-        map.draw.add(geometry);
+      if (geometry?.coordinates.length) {
+        if (identifier) {
+          map.setFilter(layerId, ['!=', '_id', identifier]);
+        }
+        if (map.draw) {
+          map.draw.add(geometry);
+        }
+      } else {
+        // Preselect draw button
+        const [mode] = Object.entries(control.controls).find(
+          ([key, value]) => ['line_string', 'point', 'polygon'].includes(key) && value === true,
+        );
+        if (mode) {
+          map.draw.changeMode(`draw_${mode}`);
+        }
       }
     };
 
     const onPathControlAdded = () => {
       map.off('control_PathControl_added', onPathControlAdded);
-      if (identifier) {
-        map.setFilter(layerId, ['!=', '_id', identifier]);
-      }
-      if (map.pathControl) {
-        map.pathControl.setLineString({ geometry, properties: routingInformation });
+      if (geometry?.coordinates.length) {
+        if (identifier) {
+          map.setFilter(layerId, ['!=', '_id', identifier]);
+        }
+        if (map.pathControl) {
+          map.pathControl.setLineString({ geometry, properties: routingInformation });
+        }
       }
     };
 
-    if (geometry?.coordinates.length) {
-      if (isRouting) {
-        map.on('control_PathControl_added', onPathControlAdded);
-      } else {
-        map.on('control_DrawControl_added', onDrawControlAdded);
-      }
+    if (isRouting) {
+      map.on('control_PathControl_added', onPathControlAdded);
+    } else {
+      map.on('control_DrawControl_added', onDrawControlAdded);
     }
 
-    const control = getRoutingConfiguration();
     control && addControl(control);
 
     return () => {
