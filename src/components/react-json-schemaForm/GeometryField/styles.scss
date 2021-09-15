@@ -1,4 +1,4 @@
-@import "~@blueprintjs/core/src/components/forms/common";
+@import '~@blueprintjs/core/src/components/forms/common';
 
 .CRUD-edit {
   .geometry-field {
@@ -14,7 +14,7 @@
       }
       &::before,
       &::after {
-        content: "";
+        content: '';
         flex-grow: 1;
         margin-top: 2px;
         border-top: 1px solid #ddd;
@@ -94,7 +94,7 @@
 }
 
 .mapboxgl-popup-content {
-  padding: 1.2rem 0.8rem 0.8rem !important;
+  padding: 1.2rem 0.8rem 0.8rem;
 }
 
 .mapboxgl-popup-close-button {
@@ -127,42 +127,40 @@
 }
 
 .mapbox-gl-path-popup-delete::before {
-  content: url("./icons/delete-point.svg");
+  content: url('./icons/delete-point.svg');
 }
 
 .mapbox-gl-path-popup-createPointOnLine::before {
-  content: url("./icons/create-point.svg");
+  content: url('./icons/create-point.svg');
 }
 
 .mapbox-gl-path-popup-createIntermediatePointOnLine::before {
-  content: url("./icons/create-intermediate-point.svg");
+  content: url('./icons/create-intermediate-point.svg');
 }
 
 .mapbox-gl-path-popup-loop::before {
-  content: url("./icons/loop.svg");
+  content: url('./icons/loop.svg');
 }
 
 .mapbox-gl-path-popup-oneWay::before {
-  content: url("./icons/un-loop.svg");
+  content: url('./icons/un-loop.svg');
 }
 
 .mapbox-gl-path-popup-disableFollowDirectionMode::before {
-  content: url("./icons/un-follow-direction.svg");
+  content: url('./icons/un-follow-direction.svg');
 }
 
 .mapbox-gl-path-popup-enableFollowDirectionMode::before {
-  content: url("./icons/follow-direction.svg");
+  content: url('./icons/follow-direction.svg');
 }
 
-.mapbox-gl-path-theme-selection__checkbox:checked
-  ~ .mapbox-gl-path-theme-selection {
+.mapbox-gl-path-theme-selection__checkbox:checked ~ .mapbox-gl-path-theme-selection {
   height: auto;
   padding: 0.3rem 0;
   opacity: 1;
   margin: 0.6rem 0 0;
   border-top: 1px solid #eaeaea;
 }
-
 
 .mapbox-gl-path-theme-selection__radio-label {
   margin: 0.2rem 0.5rem;

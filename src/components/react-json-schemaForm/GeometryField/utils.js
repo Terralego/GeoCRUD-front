@@ -20,14 +20,16 @@ export const getCoordinatesFromGeometries = (features, isMultiGeometry) => {
   return features.flatMap(({ geometry: { coordinates } }) => coordinates);
 };
 
-export const getDirectionsThemes = ({ routingSettings, accessToken }) => {
+export const getDirectionsThemes = ({ routingSettings, selectedProvider, accessToken }) => {
   if (routingSettings.length === 0) {
     return [];
   }
-  let selectedIndex = routingSettings.findIndex(({ selected }) => selected === true);
-  if (selectedIndex === -1) {
-    selectedIndex = 0;
-  }
+
+  const selectedIndex =
+    selectedProvider !== undefined
+      ? Number(selectedProvider)
+      : routingSettings.findIndex(({ selected }) => selected === true);
+
   return routingSettings
     .map(({ label, provider: { options, name } }, index) => {
       if (name === 'mapbox' && !accessToken) {
@@ -38,9 +40,10 @@ export const getDirectionsThemes = ({ routingSettings, accessToken }) => {
         name: label,
         getPathByCoordinates: async coordinates => {
           if (name === 'mapbox') {
-            const [from, to] = coordinates;
             const data = await fetch(
-              `https://api.mapbox.com/directions/v5/mapbox/${options.transit}/${from};${to}?geometries=geojson&overview=full&access_token=${accessToken}`,
+              `https://api.mapbox.com/directions/v5/mapbox/${options.transit}/${coordinates.join(
+                ';',
+              )}?geometries=geojson&overview=full&access_token=${accessToken}`,
               {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
