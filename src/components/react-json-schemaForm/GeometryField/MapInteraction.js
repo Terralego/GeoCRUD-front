@@ -105,11 +105,18 @@ const MapInteraction = () => {
   );
 
   const getRoutingConfiguration = useCallback(() => {
-    const {
-      geomType,
-      routingSettings,
-    } = geomValues;
+    const { geomType, routingInformation: { paths = [] } = {}, routingSettings } = geomValues;
 
+    const [lastPath] = paths.filter(path => !path.startsWith('junction')).slice(-1);
+
+    let selectedProvider;
+    // New path, we set the first available provider
+    if (lastPath === undefined) {
+      selectedProvider = 0;
+      // Set the provider used for the last path
+    } else {
+      selectedProvider = lastPath === 'free' ? -1 : lastPath.split(':')[1];
+    }
     const {
       config: {
         default: {
@@ -118,11 +125,10 @@ const MapInteraction = () => {
       },
     } = settings;
 
-
     if (isRouting) {
       return {
         control: CONTROL_PATH,
-        directionsThemes: getDirectionsThemes({ routingSettings, accessToken }),
+        directionsThemes: getDirectionsThemes({ routingSettings, selectedProvider, accessToken }),
         layersCustomisation: {
           pointLayerList: [{
             paint: {
@@ -245,7 +251,6 @@ const MapInteraction = () => {
       resetStyle();
     };
   }, [addControl, geomValues, getRoutingConfiguration, isRouting, layers, map, resetStyle]);
-
 
   useEffect(
     () => () => {
