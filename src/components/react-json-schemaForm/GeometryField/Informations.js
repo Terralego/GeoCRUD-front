@@ -56,7 +56,7 @@ const Information = ({
 Information.propTypes = {
   schema: PropTypes.shape({
     default: PropTypes.shape({
-      coordinates: PropTypes.arrayOf(PropTypes.number),
+      coordinates: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.array])),
       type: PropTypes.string,
     }),
   }),
