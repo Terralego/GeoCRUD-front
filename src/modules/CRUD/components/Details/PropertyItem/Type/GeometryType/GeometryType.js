@@ -8,14 +8,12 @@ const GeometryType = ({ value }) => {
   if (!coordinates.length) {
     return <NoValue />;
   }
-  return (
-    <IconFromCoordinates {...value} />
-  );
+  return <IconFromCoordinates {...value} />;
 };
 
 GeometryType.propTypes = {
   value: PropTypes.shape({
-    coordinates: PropTypes.arrayOf(PropTypes.number),
+    coordinates: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.array])),
   }),
 };
 
