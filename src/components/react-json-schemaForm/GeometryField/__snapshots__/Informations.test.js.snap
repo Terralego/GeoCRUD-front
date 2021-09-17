@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should snapshot correctly add required Point 1`] = `
+Array [
+  <p
+    className="control-label"
+  >
+    <span>
+      jsonSchema.geometryField.information-create
+      <span
+        className="required"
+      >
+        *
+      </span>
+    </span>
+  </p>,
+  <div
+    className="geometry-field__message"
+    intent="primary"
+  />,
+]
+`;
+
+exports[`should snapshot correctly edit required Point 1`] = `
+Array [
+  <p
+    className="control-label"
+  >
+    <span>
+      jsonSchema.geometryField.information-edit
+      <span
+        className="required"
+      >
+        *
+      </span>
+    </span>
+  </p>,
+  <div
+    className="geometry-field__message"
+    intent="primary"
+  >
+    jsonSchema.geometryField.helper-edit
+  </div>,
+]
+`;
+
+exports[`should snapshot correctly should manipulate routing 1`] = `
+Array [
+  <p
+    className="control-label"
+  >
+    <span>
+      jsonSchema.geometryField.information-edit
+    </span>
+  </p>,
+  <div
+    className="geometry-field__message"
+    intent="primary"
+  >
+    jsonSchema.geometryField.helper-routing
+  </div>,
+]
+`;
