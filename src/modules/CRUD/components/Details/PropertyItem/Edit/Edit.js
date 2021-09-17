@@ -20,7 +20,7 @@ const widgets = {
 };
 
 const sanitizeValue = (schema, value) => {
-  if (schema.type === 'array' && value === null) {
+  if (schema?.type === 'array' && value === null) {
     return [];
   }
   return value;
@@ -188,11 +188,14 @@ const Edit = ({
   }, [editable, isEdited, t]);
 
   const enhanceUISchema = useMemo(() => {
+    if (schema === null) {
+      return uiSchema;
+    }
     if (schema.type === 'string' && schema.enum?.length) {
       return { 'ui:placeholder': t('CRUD.details.placeholderSelect'), ...uiSchema };
     }
     return uiSchema;
-  }, [schema.enum, schema.type, t, uiSchema]);
+  }, [schema, t, uiSchema]);
 
   return (
     <div className="details__list-edit">
