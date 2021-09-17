@@ -187,18 +187,8 @@ const MapInteraction = () => {
         line_string: [ALL, LINESTRING, MULTI_LINESTRING].includes(geomType),
         polygon: [ALL, POLYGON, MULTI_POLYGON].includes(geomType),
         trash: true,
-        combine_features: [
-          ALL,
-          MULTI_POINT,
-          MULTI_LINESTRING,
-          MULTI_POLYGON,
-        ].includes(geomType),
-        uncombine_features: [
-          ALL,
-          MULTI_POINT,
-          MULTI_LINESTRING,
-          MULTI_POLYGON,
-        ].includes(geomType),
+        combine_features: false,
+        uncombine_features: false,
       },
       order: 2,
     };
@@ -217,11 +207,26 @@ const MapInteraction = () => {
     const onDrawControlAdded = () => {
       map.off('control_DrawControl_added', onDrawControlAdded);
       if (geometry?.coordinates.length) {
+        let nextGeom = geometry;
         if (identifier) {
           map.setFilter(layerId, ['!=', '_id', identifier]);
         }
+        if (geometry.type.startsWith('Multi')) {
+          // Ungroup MultiGeoms
+          nextGeom = {
+            type: 'FeatureCollection',
+            features: geometry.coordinates.map(coordinate => ({
+              type: 'Feature',
+              geometry: {
+                coordinates: coordinate,
+                type: geometry.type.replace('Multi', ''),
+              },
+              properties: {},
+            })),
+          };
+        }
         if (map.draw) {
-          map.draw.add(geometry);
+          map.draw.add(nextGeom);
         }
       } else {
         // Preselect draw button
