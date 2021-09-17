@@ -32,8 +32,12 @@ jest.mock('@blueprintjs/core', () => ({
   Tooltip: props => <div {...props} />,
 }));
 jest.mock('@rjsf/core', () => props => <form {...props} />);
-jest.mock('../../../../../../components/react-json-schemaForm/FileWidget', () => props => <form {...props} />);
-jest.mock('../../../../../../components/react-json-schemaForm/ErrorListTemplate', () => props => <div {...props} />);
+jest.mock('../../../../../../components/react-json-schemaForm/FileWidget', () => props => (
+  <form {...props} />
+));
+jest.mock('../../../../../../components/react-json-schemaForm/ErrorListTemplate', () => props => (
+  <div {...props} />
+));
 jest.mock('../../../../../../components/react-json-schemaForm', () => ({
   GeometryField: props => <div {...props} />,
   RTEField: props => <div {...props} />,
@@ -44,7 +48,7 @@ const props = {
   editedItem: '',
   method: 'PATCH',
   name: 'somePropertieName',
-  setEditedItem:  text => text,
+  setEditedItem: text => text,
   schema: {
     somePropertieName: {
       foo: 'foo',
@@ -72,19 +76,14 @@ const providerProps = {
               name: 'layerFoo',
               settings: {
                 tiles: {
-                  properties_filter: [
-                    'number',
-                    'name',
-                  ],
+                  properties_filter: ['number', 'name'],
                 },
               },
               geom_type: 0,
               routable: false,
             },
             form_schema: {
-              required: [
-                'name_fr',
-              ],
+              required: ['name_fr'],
               properties: {
                 name_fr: {
                   type: 'string',
@@ -117,37 +116,60 @@ const providerProps = {
 
 describe('should render correctly', () => {
   it('can edit', () => {
-    const tree = renderer.create((
-      <CRUDContext.Provider value={providerProps}>
-        <Edit
-          {...props}
-          editedItem="somePropertieName"
-        />
-      </CRUDContext.Provider>
-    )).toJSON();
+    const tree = renderer
+      .create(
+        <CRUDContext.Provider value={providerProps}>
+          <Edit {...props} editedItem="somePropertieName" />
+        </CRUDContext.Provider>,
+      )
+      .toJSON();
     expect(tree).toMatchSnapshot();
   });
-  it('can\'t edit', () => {
-    const tree = renderer.create((
-      <CRUDContext.Provider value={providerProps}>
-        <Edit
-          {...props}
-          editedItem="bar"
-        />
-      </CRUDContext.Provider>
-    )).toJSON();
+  it('can edit with enum schema', () => {
+    const tree = renderer
+      .create(
+        <CRUDContext.Provider value={providerProps}>
+          <Edit
+            {...props}
+            editedItem="somePropertieName"
+            schema={{
+              type: 'string',
+              enum: ['foo', 'bar', 'foobar'],
+            }}
+          />
+        </CRUDContext.Provider>,
+      )
+      .toJSON();
     expect(tree).toMatchSnapshot();
   });
-  it('can\'t edit explicitly', () => {
-    const tree = renderer.create((
-      <CRUDContext.Provider value={providerProps}>
-        <Edit
-          {...props}
-          editable={false}
-          editedItem="bar"
-        />
-      </CRUDContext.Provider>
-    )).toJSON();
+  it('can edit with no schema', () => {
+    const tree = renderer
+      .create(
+        <CRUDContext.Provider value={providerProps}>
+          <Edit {...props} editedItem="somePropertieName" schema={null} />
+        </CRUDContext.Provider>,
+      )
+      .toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+  it("can't edit", () => {
+    const tree = renderer
+      .create(
+        <CRUDContext.Provider value={providerProps}>
+          <Edit {...props} editedItem="bar" />
+        </CRUDContext.Provider>,
+      )
+      .toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+  it("can't edit explicitly", () => {
+    const tree = renderer
+      .create(
+        <CRUDContext.Provider value={providerProps}>
+          <Edit {...props} editable={false} editedItem="bar" />
+        </CRUDContext.Provider>,
+      )
+      .toJSON();
     expect(tree).toMatchSnapshot();
   });
 });
