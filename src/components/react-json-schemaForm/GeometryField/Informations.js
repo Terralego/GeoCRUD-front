@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { useMemo, memo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import Message from '../../Message';
@@ -15,17 +15,11 @@ const getIconFromType = type => {
 };
 
 const Information = ({
-  schema: { default: {
-    coordinates: schemaCoordinates,
-    type: schemaType,
-  } },
+  schema: {
+    default: { coordinates: schemaCoordinates, type: schemaType },
+  },
 }) => {
-  const {
-    isRequired,
-    isRouting,
-    nextFormData: { geom } = {},
-  } = useGeometryField();
-
+  const { isRequired, isRouting, nextFormData: { geom } = {} } = useGeometryField();
 
   const { t } = useTranslation();
 
@@ -33,21 +27,34 @@ const Information = ({
 
   const action = !coordinates.length ? 'create' : 'edit';
 
+  const helperText = useMemo(() => {
+    if (isRouting) {
+      return t('jsonSchema.geometryField.helper-routing');
+    }
+    if (action === 'create') {
+      return (
+        <Trans i18nKey="jsonSchema.geometryField.helper">
+          By using the tool
+          <span
+            className={`mapbox-gl-draw_ctrl-draw-btn mapbox-gl-draw_${getIconFromType(type)}`}
+          />
+          on map
+        </Trans>
+      );
+    }
+    return t('jsonSchema.geometryField.helper-edit', { type });
+  }, [action, isRouting, t, type]);
+
   return (
     <>
       <p className="control-label">
-        <span>{t(`jsonSchema.geometryField.information-${action}`, { type })}
+        <span>
+          {t(`jsonSchema.geometryField.information-${action}`, { type })}
           {isRequired && <span className="required">*</span>}
         </span>
       </p>
       <Message className="geometry-field__message" intent="primary">
-        {isRouting
-          ? t('jsonSchema.geometryField.helper-routing')
-          : (
-            <Trans i18nKey="jsonSchema.geometryField.helper">
-              Enter coordinates by using the tool <span className={`mapbox-gl-draw_ctrl-draw-btn mapbox-gl-draw_${getIconFromType(type)}`} /> on map
-            </Trans>
-          )}
+        {helperText}
       </Message>
     </>
   );

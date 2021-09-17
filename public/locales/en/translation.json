@@ -265,7 +265,8 @@
       "title": "Coordinates (decimal WGS84)",
       "information-create": "Draw $t(jsonSchema.geometryField.type.{{type}}.create) on map.",
       "information-edit": "Edit $t(jsonSchema.geometryField.type.{{type}}.edit) on map.",
-      "helper": "Enter coordinates by using the tool <1></1> on map",
+      "helper": "By using the tool <1></1> on map",
+      "helper-edit": "Select $t(jsonSchema.geometryField.type.{{type}}.edit) on map to edit",
       "helper-routing": "Draw a route by clicking directly on the map. You can automatically follow the paths by checking the corresponding box and selecting a follow mode",
       "or": "or",
       "reset": {
