@@ -13,27 +13,23 @@ export class LayersControl extends AbstractMapControl {
   static containerClassName = 'mapboxgl-ctrl mapboxgl-ctrl-group mapboxgl-ctrl-layers';
 
   static propTypes = {
-    layers: PropTypes.arrayOf(
-      PropTypes.shape({}),
-    ),
-    relations: PropTypes.arrayOf(
-      PropTypes.shape({}),
-    ),
+    layers: PropTypes.arrayOf(PropTypes.shape({})),
+    relations: PropTypes.arrayOf(PropTypes.shape({})),
     getMapStyle: PropTypes.func,
-  }
+  };
 
   static defaultProps = {
     layers: [],
     relations: [],
-    getMapStyle () {},
-    onChange () {},
-  }
+    getMapStyle() {},
+    onChange() {},
+  };
 
   state = {
     orderedRelations: [],
-  }
+  };
 
-  componentDidMount () {
+  componentDidMount() {
     const { layers = [], map } = this.props;
     layers.forEach(({ id }) => {
       this.setLayoutProperty(id, map.getLayoutProperty(id, 'visibility') === 'visible');
@@ -67,8 +63,9 @@ export class LayersControl extends AbstractMapControl {
       .sort((a, b) => a.order - b.order)
       .map(({ label, crud_view_pk: id, geojson, empty = false }) => {
         const layerId = this.getRelationLayerID(id);
-        const defaultChecked =
-          map.getSource(layerId) && map.getLayoutProperty(layerId, 'visibility') === 'visible';
+        const defaultChecked = Boolean(
+          map.getSource(layerId) && map.getLayoutProperty(layerId, 'visibility') === 'visible',
+        );
         return {
           defaultChecked,
           disabled: empty,
@@ -92,6 +89,16 @@ export class LayersControl extends AbstractMapControl {
   onChangeRelation = async ({ target: { value, checked } }, geojson) => {
     const { map, getMapStyle, layers } = this.props;
     const currentSourceAndLayerID = this.getRelationLayerID(value);
+    this.setState(({ orderedRelations: prevOrderedRelations }) => ({
+      orderedRelations: prevOrderedRelations.map(item =>
+        item.id !== Number(value)
+          ? item
+          : {
+              ...item,
+              defaultChecked: checked,
+            },
+      ),
+    }));
     if (!checked) {
       map.setLayoutProperty(currentSourceAndLayerID, 'visibility', 'none');
       return;
