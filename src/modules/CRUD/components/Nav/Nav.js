@@ -6,13 +6,9 @@ import classnames from 'classnames';
 import { CRUDContext } from '../../services/CRUDProvider';
 import { MapContext } from '../../services/MapProvider';
 import NavGroup from './NavGroup';
+import { sortByOrder } from '../../../../utils/sort';
 
 import './styles.scss';
-
-const sortBy = prop => ({ [prop]: orderA }, { [prop]: orderB }) =>
-  (typeof orderA === 'number' ? orderA : Infinity) - (typeof orderB === 'number' ? orderB : Infinity);
-
-const sortByOrder = sortBy('order');
 
 export const Nav = () => {
   const { map } = useContext(MapContext);
