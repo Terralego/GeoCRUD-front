@@ -5,10 +5,10 @@ import { getView } from '../../services/CRUD';
 import Header from './Header';
 import CellRender from './CellRender';
 import Footer from './Footer';
+import { sortByOrder } from '../../../../utils/sort';
 import './styles.scss';
 
 const LOADING_COLUMN_WIDTHS = Array.from({ length: 10 }, () => 250);
-
 class DataTable extends React.Component {
   state = {
     data: [],
@@ -20,17 +20,17 @@ class DataTable extends React.Component {
       order: 'asc',
     },
     columnWidths: LOADING_COLUMN_WIDTHS,
-  }
+  };
 
   tableRef = React.createRef();
 
   columnsToCompare = [undefined, undefined];
 
-  componentDidMount () {
+  componentDidMount() {
     this.loadData();
   }
 
-  componentDidUpdate ({ layerName: prevLayerName, featuresList: prevFeaturesList }) {
+  componentDidUpdate({ layerName: prevLayerName, featuresList: prevFeaturesList }) {
     const { layerName, featuresList, tableFilters } = this.props;
     if (prevLayerName !== layerName) {
       this.loadData({ ...tableFilters, page: 1, search: '', ordering: '' });
@@ -53,22 +53,30 @@ class DataTable extends React.Component {
       loading: true,
       columnWidths: LOADING_COLUMN_WIDTHS,
     });
-  }
+  };
 
   setData = () => {
     const { featuresList: { results = [] } = {}, layerName: layer } = this.props;
     const { featureListProperties } = this.getView();
 
-    const columns = Object.keys(featureListProperties).map(value => {
-      const { selected = false, title, type } = featureListProperties[value] || {};
-      return {
-        display: selected,
-        sortable: true,
-        value,
-        label: title,
-        format_type: type,
-      };
-    });
+    const columns = Object.keys(featureListProperties)
+      .map(value => {
+        const {
+          selected = false,
+          title,
+          type,
+          table_order: order,
+        } = featureListProperties[value] || {};
+        return {
+          display: selected,
+          sortable: true,
+          value,
+          label: title,
+          format_type: type,
+          order,
+        };
+      })
+      .sort(sortByOrder);
 
     const [, nextColumns = columns] = this.columnsToCompare;
 
