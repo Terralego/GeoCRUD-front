@@ -4,12 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { useParams, useHistory } from 'react-router-dom';
 
 import InteractiveMap, { INTERACTION_FN } from '@terralego/core/modules/Map/InteractiveMap';
-import {
-  CONTROL_CUSTOM,
-  CONTROLS_TOP_LEFT,
-} from '@terralego/core/modules/Map';
+import { CONTROL_CUSTOM, CONTROLS_TOP_LEFT } from '@terralego/core/modules/Map';
 
-import { ACTION_CREATE, getLayers, getSources, getView } from '../../../../services/CRUD';
+import { ACTION_CREATE, getLayers, getView } from '../../../../services/CRUD';
 import { CRUDContext } from '../../../../services/CRUDProvider';
 import { MapContext } from '../../../../services/MapProvider';
 
@@ -18,27 +15,21 @@ import Message from '../../../../../../components/Message';
 import LayersControl from '../LayersControl';
 import { usePrevious } from '../../../../../../utils/hooks';
 
-const CUSTOM_LAYER_WEIGHT = 850;
-
 const Map = ({ displayViewFeature, triggerFitBound }) => {
   const [interactions, setInteractions] = useState(null);
-  const [sources, setSources] = useState([]);
-
-  const {
-    feature,
-    settings,
-  } = useContext(CRUDContext);
+  const { feature, settings } = useContext(CRUDContext);
 
   const {
     addControl,
     controls,
     map,
     layers,
+    loadSourceAndLayer,
     removeControl,
     setFitBounds,
-    setLayers,
     setMap,
     setInteractiveMapProps,
+    sources,
   } = useContext(MapContext);
 
   const { id, layer } = useParams();
@@ -99,9 +90,10 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
 
     layers.forEach(layerItem => {
       if (!map.getLayer(layerItem.id)) return;
-      const conditionalDisplay = layerItem.source === `${view.layer.id}` && (isFeatureID || layerItem.main);
+      const { main } = layerItem;
+      const conditionalDisplay = layerItem.source === `${view.layer.id}` && (isFeatureID || main);
       map.setLayoutProperty(layerItem.id, 'visibility', conditionalDisplay ? 'visible' : 'none');
-      if (geometriesIdentifiers.length && isFeatureID && !layerItem.main) {
+      if (geometriesIdentifiers.length && isFeatureID && !main) {
         map.setFilter(layerItem.id, ['in', '_id', ...geometriesIdentifiers]);
       }
     });
@@ -149,39 +141,10 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
       layer: { id: layerId },
     } = view;
 
-    if (sources.find(source => source.id === `${layerId}`) && layers.filter(({ source }) => source === `${layerId}`)) {
-      map.style.sourceCaches[layerId].clearTiles();
-      displayCurrentLayer();
-      return;
-    }
-
-    const nextSource = getSources(settings).find(source => source.id === `${layerId}`);
-    setSources(prevSources => [...prevSources, nextSource]);
-
-    const nextLayers = getLayers(settings)
-      .filter(({ source }) => source === `${layerId}`)
-      .map(nextLayer => ({ ...nextLayer, weight: CUSTOM_LAYER_WEIGHT }));
-
-    nextLayers.forEach(({ iconList }) => {
-      if (iconList) {
-        iconList.forEach(({ label, url }) => {
-          if (map.hasImage(label)) {
-            return;
-          }
-          map.loadImage(url, (error, image) => {
-            if (error) {
-              throw error;
-            }
-            map.addImage(label, image);
-          });
-        });
-      }
-    });
-
-    setLayers(prevLayers => [...prevLayers, ...nextLayers]);
+    loadSourceAndLayerById(layerId);
 
     displayCurrentLayer();
-  }, [displayCurrentLayer, layer, layers, map, setLayers, settings, sources, view]);
+  }, [displayCurrentLayer, layer, loadSourceAndLayerById, map, settings, view]);
 
   const onFitBounds = useCallback(() => {
     if (!map || !view) {
