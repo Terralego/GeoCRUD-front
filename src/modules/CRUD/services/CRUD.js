@@ -18,11 +18,7 @@ export const fetchSettings = endpoint =>
   Api.request(`${sanitizeCustomEndpoint(endpoint)}/`);
 
 
-const flattenMenu = menu => (
-  menu.reduce((list, { crud_views: views }) => (
-    [...list, ...views]
-  ), [])
-);
+const flattenMenu = menu => menu.flatMap(({ crud_views: views }) => views);
 
 export const getView = ({ menu = [] } = {}, value, layerField = 'layer.name') => {
   const view = flattenMenu(menu);
