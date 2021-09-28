@@ -10,9 +10,12 @@ import {
   CONTROLS_TOP_RIGHT,
 } from '@terralego/core/modules/Map';
 
+import { getLayers, getSources } from './CRUD';
+
 import { getBounds } from './features';
 
 const BASE_SEARCH_API_PROVIDER = 'https://nominatim.openstreetmap.org/search?';
+const CUSTOM_LAYER_WEIGHT = 850;
 
 const CONTROL_LIST = [
   {
@@ -45,40 +48,82 @@ export const MapProvider = ({ children }) => {
 
   const { i18n } = useTranslation();
 
-  const setFitBounds = useCallback(({ coordinates, hasDetails }) => {
-    if (!coordinates.length || !map) return;
+  const loadSourceAndLayer = useCallback(
+    (settings, layerId) => {
+      if (
+        sources.find(source => source.id === `${layerId}`) &&
+        layers.filter(({ source }) => source === `${layerId}`)
+      ) {
+        map.style.sourceCaches[layerId].clearTiles();
+        return;
+      }
+      const nextSource = getSources(settings).find(source => source.id === `${layerId}`);
+      setSources(prevSources => [...prevSources, nextSource]);
 
-    const { current: detail } = detailsRef;
-    const { current: dataTable } = dataTableRef;
+      const nextLayers = getLayers(settings)
+        .filter(({ source }) => source === `${layerId}`)
+        .map(nextLayer => ({ ...nextLayer, weight: CUSTOM_LAYER_WEIGHT }));
 
-    const padding = {
-      top: 20,
-      right: hasDetails ? (detail?.offsetWidth ?? 0 + 50) : 50,
-      bottom: !hasDetails ? (dataTable?.offsetHeight ?? 0 + 20) : 20,
-      left: 20,
-    };
-    map.resize();
-    map.fitBounds(getBounds(coordinates), { padding, duration: 0 });
-  }, [dataTableRef, detailsRef, map]);
+      nextLayers.forEach(({ iconList }) => {
+        if (iconList) {
+          iconList.forEach(({ label, url }) => {
+            if (map.hasImage(label)) {
+              return;
+            }
+            map.loadImage(url, (error, image) => {
+              if (error) {
+                throw error;
+              }
+              map.addImage(label, image);
+            });
+          });
+        }
+      });
 
-  const onSearch = useCallback(async query => {
-    const params = new URLSearchParams();
-    params.append('q', query);
-    params.append('format', 'geojson');
-    params.append('accept-language', i18n.language);
+      setLayers(prevLayers => [...prevLayers, ...nextLayers]);
+    },
+    [layers, map, sources],
+  );
 
-    const headers = new Headers([['Content-Type', 'application/json']]);
-    let results;
-    try {
-      results = await fetch(`${BASE_SEARCH_API_PROVIDER}${params}`, {
-        headers,
-      }).then(response => response.json());
-    } catch (e) {
-      return null;
-    }
-    // Filter to avoid duplicates location
-    const filteredFeatures = results.features.reduce(
-      (list, result) => {
+  const setFitBounds = useCallback(
+    ({ coordinates, hasDetails }) => {
+      if (!coordinates.length || !map) return;
+
+      const { current: detail } = detailsRef;
+      const { current: dataTable } = dataTableRef;
+
+      // Keep the boundaries visible on the screen with a padding of ~20px
+      // `50` for the right to avoid geometries displayed under the zoom control
+      const padding = {
+        top: 20,
+        right: hasDetails ? detail?.offsetWidth ?? 0 + 50 : 50,
+        bottom: !hasDetails ? dataTable?.offsetHeight ?? 0 + 20 : 20,
+        left: 20,
+      };
+      map.resize();
+      map.fitBounds(getBounds(coordinates), { padding, duration: 0 });
+    },
+    [dataTableRef, detailsRef, map],
+  );
+
+  const onSearch = useCallback(
+    async query => {
+      const params = new URLSearchParams();
+      params.append('q', query);
+      params.append('format', 'geojson');
+      params.append('accept-language', i18n.language);
+
+      const headers = new Headers([['Content-Type', 'application/json']]);
+      let results;
+      try {
+        results = await fetch(`${BASE_SEARCH_API_PROVIDER}${params}`, {
+          headers,
+        }).then(response => response.json());
+      } catch (e) {
+        return null;
+      }
+      // Filter to avoid duplicates location
+      const filteredFeatures = results.features.reduce((list, result) => {
         if (!list.some(item => item.properties.display_name === result.properties.display_name)) {
           list.push(result);
         }
@@ -185,6 +230,7 @@ export const MapProvider = ({ children }) => {
     featureToHighlight,
     interactiveMapProps,
     layers,
+    loadSourceAndLayer,
     map,
     setControls,
     setFitBounds,
