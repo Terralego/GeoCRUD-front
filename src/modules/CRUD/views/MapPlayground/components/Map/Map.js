@@ -132,6 +132,13 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
     setInteractions(nextInteractions);
   }, [displayViewFeature, id, push, settings, view]);
 
+  const loadSourceAndLayerById = useCallback(
+    layerId => {
+      loadSourceAndLayer(settings, layerId);
+    },
+    [loadSourceAndLayer, settings],
+  );
+
   useEffect(() => {
     if (!settings || !layer || !view || !map) {
       return;
@@ -190,8 +197,30 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
     if (!view) {
       return;
     }
-    if (!isFeatureID) {
+    if (!id) {
       removeControl(CONTROL_CUSTOM);
+      return;
+    }
+
+    if (prevFeature !== feature[id]) {
+      removeControl(CONTROL_CUSTOM);
+    }
+
+    if (!isFeatureID) {
+      const othersLayers = getLayers(settings).filter(
+        ({ main, 'source-layer': sourceLayer }) => main && sourceLayer !== layer,
+      );
+      if (othersLayers.length) {
+        addControl({
+          control: CONTROL_CUSTOM,
+          featureID: id,
+          instance: LayersControl,
+          layers: othersLayers,
+          order: 1,
+          position: CONTROLS_TOP_LEFT,
+          loadSourceAndLayerById,
+        });
+      }
     } else {
       const { relations, geometries } = feature[id] || {};
       const layersProps = layers
@@ -200,9 +229,7 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
           ...item,
           empty: geometries?.[item['source-layer']].geom === null,
         }));
-      if (prevFeature !== feature[id]) {
-        removeControl(CONTROL_CUSTOM);
-      }
+
       if (layersProps.length && relations) {
         addControl({
           control: CONTROL_CUSTOM,
@@ -222,9 +249,12 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
     getMapStyle,
     id,
     isFeatureID,
+    layer,
     layers,
+    loadSourceAndLayerById,
     prevFeature,
     removeControl,
+    settings,
     view,
   ]);
 
