@@ -14,13 +14,16 @@ import { getBounds } from './features';
 
 const BASE_SEARCH_API_PROVIDER = 'https://nominatim.openstreetmap.org/search?';
 
-const CONTROL_LIST = [{
-  control: CONTROL_BACKGROUND_STYLES,
-  position: CONTROLS_TOP_RIGHT,
-}, {
-  control: CONTROL_CAPTURE,
-  position: CONTROLS_TOP_RIGHT,
-}];
+const CONTROL_LIST = [
+  {
+    control: CONTROL_BACKGROUND_STYLES,
+    position: CONTROLS_TOP_RIGHT,
+  },
+  {
+    control: CONTROL_CAPTURE,
+    position: CONTROLS_TOP_RIGHT,
+  },
+];
 
 const sortByOrder = ({ order: a = 0 }, { order: b = 0 }) => a - b;
 
@@ -32,6 +35,11 @@ const { Provider } = MapContext;
 export const MapProvider = ({ children }) => {
   const detailsRef = useRef(null);
   const dataTableRef = useRef(null);
+
+  const [controls, setControls] = useState([...DEFAULT_CONTROLS, ...CONTROL_LIST]);
+  const [interactiveMapProps, setInteractiveMapProps] = useState(undefined);
+  const [sources, setSources] = useState([]);
+  const [layers, setLayers] = useState([]);
 
   const [map, setMap] = useState(null);
 
@@ -75,32 +83,37 @@ export const MapProvider = ({ children }) => {
           list.push(result);
         }
         return list;
-      }, [],
-    );
-    const data = [{
-      total: filteredFeatures.length,
-      results: filteredFeatures.map(
-        ({ bbox, properties: { osm_id: id, display_name: label } }) => ({
-          label,
-          id,
-          bounds: bbox,
-        }),
-      ),
-    }];
-    return data;
-  }, [i18n.language]);
+      }, []);
+      const data = [
+        {
+          total: filteredFeatures.length,
+          results: filteredFeatures.map(
+            ({ bbox, properties: { osm_id: id, display_name: label } }) => ({
+              label,
+              id,
+              bounds: bbox,
+            }),
+          ),
+        },
+      ];
+      return data;
+    },
+    [i18n.language],
+  );
 
-  const onSearchResultClick = useCallback(({ result: { bounds } }) => {
-    const [xMin, yMin, xMax, yMax] = bounds;
-    setFitBounds({
-      coordinates: [[xMin, yMin], [xMax, yMax]],
-      hasDetails: Boolean(detailsRef.current),
-    });
-  }, [setFitBounds]);
-
-  const [controls, setControls] = useState([...DEFAULT_CONTROLS, ...CONTROL_LIST]);
-  const [interactiveMapProps, setInteractiveMapProps] = useState(undefined);
-  const [layers, setLayers] = useState([]);
+  const onSearchResultClick = useCallback(
+    ({ result: { bounds } }) => {
+      const [xMin, yMin, xMax, yMax] = bounds;
+      setFitBounds({
+        coordinates: [
+          [xMin, yMin],
+          [xMax, yMax],
+        ],
+        hasDetails: Boolean(detailsRef.current),
+      });
+    },
+    [setFitBounds],
+  );
 
   useEffect(() => {
     if (!map) {
@@ -170,22 +183,20 @@ export const MapProvider = ({ children }) => {
     detailsRef,
     dataTableRef,
     featureToHighlight,
-    layers,
     interactiveMapProps,
+    layers,
     map,
     setControls,
     setFitBounds,
     setMap,
     setLayers,
     setInteractiveMapProps,
+    setSources,
+    sources,
     removeControl,
   };
 
-  return (
-    <Provider value={value}>
-      {children}
-    </Provider>
-  );
+  return <Provider value={value}>{children}</Provider>;
 };
 
 export default MapProvider;
