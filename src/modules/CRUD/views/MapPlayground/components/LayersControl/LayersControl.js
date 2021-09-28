@@ -15,6 +15,7 @@ export class LayersControl extends AbstractMapControl {
   static propTypes = {
     layers: PropTypes.arrayOf(PropTypes.shape({})),
     relations: PropTypes.arrayOf(PropTypes.shape({})),
+    loadSourceAndLayerById: PropTypes.func,
     getMapStyle: PropTypes.func,
   };
 
@@ -22,6 +23,7 @@ export class LayersControl extends AbstractMapControl {
     layers: [],
     relations: [],
     getMapStyle() {},
+    loadSourceAndLayerById() {},
     onChange() {},
   };
 
@@ -32,7 +34,9 @@ export class LayersControl extends AbstractMapControl {
   componentDidMount() {
     const { layers = [], map } = this.props;
     layers.forEach(({ id }) => {
-      this.setLayoutProperty(id, map.getLayoutProperty(id, 'visibility') === 'visible');
+      if (map.getSource(id)) {
+        this.setLayoutProperty(id, map.getLayoutProperty(id, 'visibility') === 'visible');
+      }
     });
     this.orderedRelations();
   }
@@ -128,9 +132,16 @@ export class LayersControl extends AbstractMapControl {
     map.setLayoutProperty(currentSourceAndLayerID, 'visibility', 'visible');
   };
 
-  setLayoutProperty = (layerId, isVisible) => {
-    const { map } = this.props;
-    map.setLayoutProperty(layerId, 'visibility', isVisible ? 'visible' : 'none');
+  setLayoutProperty = async (layerId, isVisible) => {
+    const { map, layers, loadSourceAndLayerById } = this.props;
+    const { source } = layers.find(layer => layer.id === layerId);
+    const sourceId = Number(source);
+    if (map.getSource(sourceId)) {
+      map.setLayoutProperty(layerId, 'visibility', isVisible ? 'visible' : 'none');
+    } else if (!Number.isNaN(sourceId)) {
+      await loadSourceAndLayerById(sourceId);
+      map.setLayoutProperty(layerId, 'visibility', isVisible ? 'visible' : 'none');
+    }
   };
 
   onClosing = () => {
@@ -153,9 +164,12 @@ export class LayersControl extends AbstractMapControl {
           position={Position.BOTTOM_LEFT}
           content={
             <div className="radioGroup layerGroup__item">
-              {layers.map(({ title, id, empty = false }) => {
+              {layers.map(({ title, id, empty = false, source }) => {
                 const defaultChecked =
-                  !empty && map.getLayoutProperty(id, 'visibility') === 'visible';
+                  !empty &&
+                  map.getSource(source) &&
+                  map.getLayoutProperty(id, 'visibility') === 'visible';
+
                 return (
                   <Checkbox
                     className="bgLayer-radio"
