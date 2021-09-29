@@ -69,11 +69,18 @@ const Edit = ({
       return sanitizeValue(schema, displayValue);
     }
     const { properties = {} } = feature[id] || {};
-    const propertiesListed = Object.values(properties).reduce(
-      (list, item) => ({ ...list, ...item }),
+
+    // Get all properties flattened without groups
+    const flattenProperties = Object.entries(properties).reduce(
+      (list, item) =>
+        typeof item[1] !== 'string'
+          ? // Props in groups
+            { ...list, ...item[1] }
+          : // Props not in groups
+            { ...list, ...Object.fromEntries([item]) },
       {},
     );
-    return sanitizeValue(schema, propertiesListed[name]);
+    return sanitizeValue(schema, flattenProperties[name]);
   }, [displayValue, feature, id, isGeom, name, schema]);
 
 
