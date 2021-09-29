@@ -1,0 +1,93 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshots should display layers 1`] = `
+<div
+  className="layerGroup"
+  content="CRUD.map.controls.layers.label"
+>
+  <div
+    className="popoverPos"
+    content={
+      <div
+        className="radioGroup layerGroup__item"
+      >
+        <Checkbox
+          className="bgLayer-radio"
+          defaultChecked={false}
+          disabled={false}
+          label="Foo"
+          onChange={[Function]}
+          value="id1"
+        />
+        <Checkbox
+          className="bgLayer-radio"
+          defaultChecked={false}
+          disabled={false}
+          label="Bar"
+          onChange={[Function]}
+          value="id2"
+        />
+      </div>
+    }
+    onClosing={[Function]}
+    position="bottom-left"
+  >
+    <button
+      aria-label="CRUD.map.controls.layers.label"
+      className="mapboxgl-ctrl-icon"
+      type="button"
+    >
+      <div
+        icon="multi-select"
+      />
+    </button>
+  </div>
+</div>
+`;
+
+exports[`snapshots should display relations 1`] = `
+<div
+  className="layerGroup"
+  content="CRUD.map.controls.layers.label"
+>
+  <div
+    className="popoverPos"
+    content={
+      <div
+        className="radioGroup layerGroup__item"
+      >
+        <Checkbox
+          className="bgLayer-radio"
+          defaultChecked={false}
+          disabled={true}
+          label="Touristics content"
+          onChange={[Function]}
+          value={2}
+        />
+        <Checkbox
+          className="bgLayer-radio"
+          defaultChecked={false}
+          disabled={false}
+          label="POIs"
+          onChange={[Function]}
+          value={17}
+        />
+      </div>
+    }
+    onClosing={[Function]}
+    position="bottom-left"
+  >
+    <button
+      aria-label="CRUD.map.controls.layers.label"
+      className="mapboxgl-ctrl-icon"
+      type="button"
+    >
+      <div
+        icon="multi-select"
+      />
+    </button>
+  </div>
+</div>
+`;
+
+exports[`snapshots should not display anything 1`] = `null`;
