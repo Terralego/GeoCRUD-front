@@ -42,20 +42,26 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
     i18n: {
       getResourceBundle,
       language,
-      store: { options: { fallbackLng } },
+      store: {
+        options: { fallbackLng },
+      },
     },
     t,
   } = useTranslation();
 
   const view = useMemo(() => getView(settings, layer), [layer, settings]);
 
-  const backgroundStyle = useMemo(() => settings?.config?.BASE_LAYERS?.map(style => {
-    const [label] = Object.keys(style);
-    return {
-      label,
-      url: style[label].url,
-    };
-  }), [settings]);
+  const backgroundStyle = useMemo(
+    () =>
+      settings?.config?.BASE_LAYERS?.map(style => {
+        const [label] = Object.keys(style);
+        return {
+          label,
+          url: style[label].url,
+        };
+      }),
+    [settings],
+  );
 
   const mapConfig = useMemo(() => {
     if (!settings) {
@@ -75,9 +81,7 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
   const isFeatureID = useMemo(() => ![undefined, ACTION_CREATE].includes(id), [id]);
 
   const displayCurrentLayer = useCallback(() => {
-    const {
-      geometries = {},
-    } = feature[id] || {};
+    const { geometries = {} } = feature[id] || {};
 
     if (!map || !layers.length) {
       return;
@@ -168,10 +172,17 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
     }
 
     const { geom: { coordinates = [] } = {} } = feature[id] || {};
-    const { extent: [w, s, e, n] } = view;
+    const {
+      extent: [w, s, e, n],
+    } = view;
 
     setFitBounds({
-      coordinates: isFeatureID ? coordinates : [[w, s], [e, n]],
+      coordinates: isFeatureID
+        ? coordinates
+        : [
+            [w, s],
+            [e, n],
+          ],
       hasDetails: !!id,
     });
 
@@ -183,14 +194,19 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
     onFitBounds();
   }, [onFitBounds, triggerFitBound]);
 
+  const onMapLoaded = useCallback(
+    nextMap => {
+      setMap(nextMap);
+    },
+    [setMap],
+  );
 
-  const onMapLoaded = useCallback(nextMap => {
-    setMap(nextMap);
-  }, [setMap]);
-
-  const onInit = useCallback(props => {
-    setInteractiveMapProps(props);
-  }, [setInteractiveMapProps]);
+  const onInit = useCallback(
+    props => {
+      setInteractiveMapProps(props);
+    },
+    [setInteractiveMapProps],
+  );
 
   const getMapStyle = useCallback(pk => getView(settings, pk, 'id').mapStyle, [settings]);
 
@@ -261,9 +277,10 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
 
   const {
     terralego: { map: mapLocale },
-  } = useMemo(() => (
-    getResourceBundle(language.slice(0, 2)) || getResourceBundle(fallbackLng[0])
-  ), [fallbackLng, getResourceBundle, language]);
+  } = useMemo(
+    () => getResourceBundle(language.slice(0, 2)) || getResourceBundle(fallbackLng[0]),
+    [fallbackLng, getResourceBundle, language],
+  );
 
   if ([mapConfig, interactions].includes(null)) {
     return null;
