@@ -48,13 +48,33 @@ export const MapProvider = ({ children }) => {
 
   const { i18n } = useTranslation();
 
+  const loadIconsInMap = useCallback(
+    list => {
+      if (!list) {
+        return;
+      }
+      list.forEach(({ label, url }) => {
+        if (map.hasImage(label)) {
+          return;
+        }
+        map.loadImage(url, (error, image) => {
+          if (error) {
+            throw error;
+          }
+          map.addImage(label, image);
+        });
+      });
+    },
+    [map],
+  );
+
   const loadSourceAndLayer = useCallback(
     (settings, layerId) => {
       if (
         sources.find(source => source.id === `${layerId}`) &&
         layers.filter(({ source }) => source === `${layerId}`)
       ) {
-        map.style.sourceCaches[layerId].clearTiles();
+        map && map.style.sourceCaches[layerId].clearTiles();
         return;
       }
       const nextSource = getSources(settings).find(source => source.id === `${layerId}`);
@@ -65,24 +85,12 @@ export const MapProvider = ({ children }) => {
         .map(nextLayer => ({ ...nextLayer, weight: CUSTOM_LAYER_WEIGHT }));
 
       nextLayers.forEach(({ iconList }) => {
-        if (iconList) {
-          iconList.forEach(({ label, url }) => {
-            if (map.hasImage(label)) {
-              return;
-            }
-            map.loadImage(url, (error, image) => {
-              if (error) {
-                throw error;
-              }
-              map.addImage(label, image);
-            });
-          });
-        }
+        loadIconsInMap(iconList);
       });
 
       setLayers(prevLayers => [...prevLayers, ...nextLayers]);
     },
-    [layers, map, sources],
+    [layers, loadIconsInMap, map, sources],
   );
 
   const setFitBounds = useCallback(
@@ -168,14 +176,17 @@ export const MapProvider = ({ children }) => {
       if (prevControls.some(({ control }) => control === CONTROL_SEARCH)) {
         return prevControls;
       }
-      return [{
-        control: CONTROL_SEARCH,
-        position: CONTROLS_TOP_RIGHT,
-        maxResults: 10,
-        onSearch,
-        onSearchResultClick,
-        order: -1,
-      }, ...prevControls].sort(sortByOrder);
+      return [
+        {
+          control: CONTROL_SEARCH,
+          position: CONTROLS_TOP_RIGHT,
+          maxResults: 10,
+          onSearch,
+          onSearchResultClick,
+          order: -1,
+        },
+        ...prevControls,
+      ].sort(sortByOrder);
     });
   }, [map, onSearch, onSearchResultClick]);
 
@@ -199,28 +210,33 @@ export const MapProvider = ({ children }) => {
     });
   }, []);
 
-  const featureToHighlight = useCallback(({ featureId, layer, hover }) => {
-    const { id: layerId, source } = layers.find(({ 'source-layer': sourceLayer }) => sourceLayer === layer) || {};
-    if (!map || !featureId || !layerId) {
-      return;
-    }
-    const { addHighlight, removeHighlight } = interactiveMapProps;
-    if (hover) {
-      addHighlight && addHighlight({
-        layerId,
-        featureId,
-        highlightColor: 'red',
-        unique: true,
-        source,
-      });
-    } else {
-      removeHighlight && removeHighlight({
-        layerId,
-        featureId,
-      });
-    }
-  }, [interactiveMapProps, layers, map]);
-
+  const featureToHighlight = useCallback(
+    ({ featureId, layer, hover }) => {
+      const { id: layerId, source } =
+        layers.find(({ 'source-layer': sourceLayer }) => sourceLayer === layer) || {};
+      if (!map || !featureId || !layerId) {
+        return;
+      }
+      const { addHighlight, removeHighlight } = interactiveMapProps;
+      if (hover) {
+        addHighlight &&
+          addHighlight({
+            layerId,
+            featureId,
+            highlightColor: 'red',
+            unique: true,
+            source,
+          });
+      } else {
+        removeHighlight &&
+          removeHighlight({
+            layerId,
+            featureId,
+          });
+      }
+    },
+    [interactiveMapProps, layers, map],
+  );
 
   const value = {
     addControl,
