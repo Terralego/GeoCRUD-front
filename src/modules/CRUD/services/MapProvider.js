@@ -246,6 +246,7 @@ export const MapProvider = ({ children }) => {
     featureToHighlight,
     interactiveMapProps,
     layers,
+    loadIconsInMap,
     loadSourceAndLayer,
     map,
     setControls,

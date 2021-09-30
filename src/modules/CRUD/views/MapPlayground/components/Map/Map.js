@@ -23,6 +23,7 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
     controls,
     map,
     layers,
+    loadIconsInMap,
     loadSourceAndLayer,
     removeControl,
     setFitBounds,
@@ -208,7 +209,18 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
     [setInteractiveMapProps],
   );
 
-  const getMapStyle = useCallback(pk => getView(settings, pk, 'id').mapStyle, [settings]);
+  const getMapStyle = useCallback(
+    layerId => {
+      const {
+        mapStyle: { iconList, ...styles },
+      } = getView(settings, layerId, 'id');
+
+      loadIconsInMap(iconList);
+
+      return styles;
+    },
+    [loadIconsInMap, settings],
+  );
 
   useEffect(() => {
     if (!view) {
