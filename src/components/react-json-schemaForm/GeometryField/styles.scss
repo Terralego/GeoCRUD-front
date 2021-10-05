@@ -30,6 +30,13 @@
     &__row {
       padding: 0.5rem;
     }
+
+    &__legend {
+      display: flex;
+      width: calc(100% - 1rem);
+      justify-content: space-between;
+    }
+
     &__message {
       max-width: max-content;
       margin: auto;
@@ -64,7 +71,7 @@
 .details__list-edit {
   .geometry-field {
     &__col {
-      margin-top: 1.8rem;
+      margin-top: 0.8rem;
     }
   }
 }

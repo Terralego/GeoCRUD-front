@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should snapshot correctly 1`] = `
+<div
+  formData={
+    Object {
+      "coordinates": Array [],
+      "type": "",
+    }
+  }
+  onChange={[Function]}
+  schema={
+    Object {
+      "title": "foo",
+    }
+  }
+>
+  <fieldset
+    className="geometry-field"
+  >
+    <div
+      className="geometry-field__legend"
+      title="foo"
+    />
+    <div
+      className="geometry-field__col"
+    >
+      <div />
+      <div
+        className="form-group field"
+      >
+        <div
+          className="geometry-field__row"
+        >
+          <div
+            schema={
+              Object {
+                "title": "foo",
+              }
+            }
+          />
+        </div>
+        <span
+          className="geometry-field__or"
+        >
+          <span>
+            jsonSchema.geometryField.or
+          </span>
+        </span>
+        <div
+          className="geometry-field__row"
+        >
+          <div />
+        </div>
+      </div>
+    </div>
+    <div
+      intent="danger"
+      schema={
+        Object {
+          "title": "foo",
+        }
+      }
+    />
+  </fieldset>
+</div>
+`;

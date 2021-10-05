@@ -2,7 +2,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  right:0;
+  right: 0;
   width: 40%;
   min-width: 26rem;
   display: flex;
@@ -14,7 +14,7 @@
   background: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   z-index: 3;
-  
+
   &--active {
     transform: translateX(0);
     ~ .CRUD-map .interactive-map {
@@ -29,7 +29,7 @@
     width: 100%;
     border-left: 1px solid #efefef;
   }
-  
+
   &__metas {
     text-align: right;
   }
@@ -107,7 +107,8 @@
     .bp3-tab-list {
       flex-wrap: wrap;
       padding: 0 1rem 1rem;
-      box-shadow: 0 0 0 1px rgba(16, 22, 26, 0.1), 0 0 0 rgba(16, 22, 26, 0), 0 1px 1px rgba(16, 22, 26, 0.2);
+      box-shadow: 0 0 0 1px rgba(16, 22, 26, 0.1), 0 0 0 rgba(16, 22, 26, 0),
+        0 1px 1px rgba(16, 22, 26, 0.2);
       z-index: 1;
     }
     .bp3-tab-panel {
@@ -118,18 +119,19 @@
   }
 
   &__RTE {
-    ol, ul {
+    ol,
+    ul {
       padding: 0 1rem !important;
     }
     ul {
-       list-style: disc !important;
+      list-style: disc !important;
     }
 
     .icon-text {
       display: flex;
       align-items: center;
       img {
-        margin-right: .2rem;
+        margin-right: 0.2rem;
         max-height: 2rem;
       }
     }
@@ -142,7 +144,8 @@
       width: 100%;
       border-collapse: collapse;
     }
-    td, th {
+    td,
+    th {
       border: 1px solid #ccc;
       padding: 0.3rem;
     }
@@ -183,7 +186,7 @@
     &:hover,
     &--active {
       background: #e9f1f5;
-    } 
+    }
     &--inactive {
       opacity: 0.6;
     }
@@ -204,7 +207,7 @@
 
   &__list-item--active &__list-value {
     visibility: hidden;
-  } 
+  }
 
   &__list-create {
     width: 100%;
@@ -234,18 +237,12 @@
     font-size: 0.8rem;
     color: #666;
     &::before {
-      content: "* ";
+      content: '* ';
     }
 
     &--create {
       margin-top: 0.5rem;
     }
-    &--edit {
-      position: absolute;
-      top: 0.4rem;
-      right: 2.4rem;
-    }
-
   }
 
   &__list-item:hover &__list-edit {
@@ -294,7 +291,7 @@
     }
 
     .form-group {
-      input[type=date] {
+      input[type='date'] {
         padding-top: 0;
       }
     }
