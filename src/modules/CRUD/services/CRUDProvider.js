@@ -214,7 +214,7 @@ export class CRUDProvider extends React.Component {
   createAttachmentCategories = async name => {
     const result = {};
     try {
-      const category = await saveAttachmentCategories(name);
+      const category = await saveAttachmentCategories({ name });
       result.category = category;
     } catch (e) {
       result.error = e;
