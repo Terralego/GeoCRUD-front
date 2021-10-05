@@ -1,0 +1,224 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render correctly map focus on geom object 1`] = `
+<div
+  backgroundStyle={
+    Array [
+      Object {
+        "label": "OSM",
+        "url": "endpointToTilejson",
+      },
+      Object {
+        "label": "Mapbox",
+        "url": "endpointToTilejson",
+      },
+    ]
+  }
+  controls={
+    Array [
+      Object {
+        "control": "NavigationControl",
+        "position": "top-right",
+      },
+    ]
+  }
+  customStyle={
+    Object {
+      "layers": Array [
+        Object {
+          "id": "fooId",
+          "main": true,
+          "paint": Object {
+            "circle-color": "#0075d1",
+            "circle-radius": 6,
+          },
+          "source": "my-source-id",
+          "source-layer": "fooLayer",
+          "title": "Foo",
+          "type": "circle",
+          "weight": 850,
+        },
+        Object {
+          "id": "barId",
+          "main": false,
+          "paint": Object {
+            "fill-color": "black",
+            "fill-opacity": 0.4,
+          },
+          "source": "my-source-id",
+          "source-layer": "fooLayer",
+          "title": "Bar",
+          "type": "fill",
+          "weight": 850,
+        },
+      ],
+      "sources": Array [
+        Object {
+          "id": "my-source-id",
+          "type": "vector",
+          "url": "/api/crud/layers/my-source-id/tilejson/",
+        },
+      ],
+    }
+  }
+  interactions={Array []}
+  locale="mapLocale"
+  onInit={[Function]}
+  onMapLoaded={[Function]}
+  onStyleChange={[Function]}
+  translate={[Function]}
+/>
+`;
+
+exports[`should render correctly map focus on layer 1`] = `
+<div
+  backgroundStyle={
+    Array [
+      Object {
+        "label": "OSM",
+        "url": "endpointToTilejson",
+      },
+      Object {
+        "label": "Mapbox",
+        "url": "endpointToTilejson",
+      },
+    ]
+  }
+  controls={
+    Array [
+      Object {
+        "control": "NavigationControl",
+        "position": "top-right",
+      },
+    ]
+  }
+  customStyle={
+    Object {
+      "layers": Array [
+        Object {
+          "id": "fooId",
+          "main": true,
+          "paint": Object {
+            "circle-color": "#0075d1",
+            "circle-radius": 6,
+          },
+          "source": "my-source-id",
+          "source-layer": "fooLayer",
+          "title": "Foo",
+          "type": "circle",
+          "weight": 850,
+        },
+        Object {
+          "id": "barId",
+          "main": false,
+          "paint": Object {
+            "fill-color": "black",
+            "fill-opacity": 0.4,
+          },
+          "source": "my-source-id",
+          "source-layer": "fooLayer",
+          "title": "Bar",
+          "type": "fill",
+          "weight": 850,
+        },
+      ],
+      "sources": Array [
+        Object {
+          "id": "my-source-id",
+          "type": "vector",
+          "url": "/api/crud/layers/my-source-id/tilejson/",
+        },
+      ],
+    }
+  }
+  interactions={
+    Array [
+      Object {
+        "fn": [Function],
+        "id": "CRUD-fooId-fooId",
+        "interaction": "function",
+        "main": true,
+        "name": "fooLayer",
+        "source": "fooId",
+        "source-layer": "fooId",
+      },
+    ]
+  }
+  locale="mapLocale"
+  onInit={[Function]}
+  onMapLoaded={[Function]}
+  onStyleChange={[Function]}
+  translate={[Function]}
+/>
+`;
+
+exports[`should render correctly map without object 1`] = `
+<div
+  accessToken="FAKE_ACCESS_TOKEN"
+  backgroundStyle={
+    Array [
+      Object {
+        "label": "OSM",
+        "url": "endpointToTilejson",
+      },
+      Object {
+        "label": "Mapbox",
+        "url": "endpointToTilejson",
+      },
+    ]
+  }
+  controls={
+    Array [
+      Object {
+        "control": "NavigationControl",
+        "position": "top-right",
+      },
+    ]
+  }
+  customStyle={
+    Object {
+      "layers": Array [
+        Object {
+          "id": "fooId",
+          "main": true,
+          "paint": Object {
+            "circle-color": "#0075d1",
+            "circle-radius": 6,
+          },
+          "source": "my-source-id",
+          "source-layer": "fooLayer",
+          "title": "Foo",
+          "type": "circle",
+          "weight": 850,
+        },
+        Object {
+          "id": "barId",
+          "main": false,
+          "paint": Object {
+            "fill-color": "black",
+            "fill-opacity": 0.4,
+          },
+          "source": "my-source-id",
+          "source-layer": "fooLayer",
+          "title": "Bar",
+          "type": "fill",
+          "weight": 850,
+        },
+      ],
+      "sources": Array [
+        Object {
+          "id": "my-source-id",
+          "type": "vector",
+          "url": "/api/crud/layers/my-source-id/tilejson/",
+        },
+      ],
+    }
+  }
+  interactions={Array []}
+  locale="mapLocale"
+  onInit={[Function]}
+  onMapLoaded={[Function]}
+  onStyleChange={[Function]}
+  translate={[Function]}
+/>
+`;
