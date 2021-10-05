@@ -9,30 +9,26 @@ import ImportGeomFile from '../../ImportGeomFile';
 
 import MapInteraction from './MapInteraction';
 import Informations from './Informations';
-import './styles.scss';
-import RequiredMention from './RequiredMention';
+import Legend from './Legend';
 import ResetGeometry from './ResetGeometry';
+import './styles.scss';
 
-
-const GeometryField = ({
-  formData,
-  name,
-  onChange,
-  schema,
-}) => {
+const GeometryField = ({ formData, name, onChange, schema }) => {
   const { t } = useTranslation();
 
   return (
     <GeometryFieldProvider formData={formData} onChange={onChange} name={name} schema={schema}>
       <fieldset className="geometry-field">
-        <RequiredMention />
+        <Legend className="geometry-field__legend" title={schema.title} />
         <div className="geometry-field__col">
           <MapInteraction />
           <div className="form-group field">
             <div className="geometry-field__row">
               <Informations schema={schema} />
             </div>
-            <span className="geometry-field__or"><span>{t('jsonSchema.geometryField.or')}</span></span>
+            <span className="geometry-field__or">
+              <span>{t('jsonSchema.geometryField.or')}</span>
+            </span>
             <div className="geometry-field__row">
               <ImportGeomFile />
             </div>
