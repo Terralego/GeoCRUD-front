@@ -90,13 +90,13 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
     layers.forEach(layerItem => {
       if (!map.getLayer(layerItem.id)) return;
       const { main } = layerItem;
-      const conditionalDisplay = layerItem.source === `${view.layer.id}` && (isFeatureID || main);
+      const conditionalDisplay = layerItem.source === `${view.layer?.id}` && (isFeatureID || main);
       map.setLayoutProperty(layerItem.id, 'visibility', conditionalDisplay ? 'visible' : 'none');
       if (geometriesIdentifiers.length && isFeatureID && !main) {
         map.setFilter(layerItem.id, ['in', '_id', ...geometriesIdentifiers]);
       }
     });
-  }, [feature, id, isFeatureID, layers, map, view.layer.id]);
+  }, [feature, id, isFeatureID, layers, map, view]);
 
   const interactions = useMemo(() => {
     if (!view || id) {
@@ -155,7 +155,7 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
   }, [displayCurrentLayer, layer, loadSourceAndLayerById, map, settings, view]);
 
   const onFitBounds = useCallback(() => {
-    if (!map || !view) {
+    if (!map || !view?.extent) {
       return;
     }
 
