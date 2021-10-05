@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useMemo, useCallback } from 'react';
+import React, { useContext, useEffect, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useParams, useHistory } from 'react-router-dom';
@@ -16,7 +16,6 @@ import LayersControl from '../LayersControl';
 import { usePrevious } from '../../../../../../utils/hooks';
 
 const Map = ({ displayViewFeature, triggerFitBound }) => {
-  const [interactions, setInteractions] = useState(null);
   const { feature, settings } = useContext(CRUDContext);
 
   const {
@@ -99,20 +98,19 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
     });
   }, [feature, id, isFeatureID, layers, map, view.layer.id]);
 
-  useEffect(() => {
+  const interactions = useMemo(() => {
     if (!view || id) {
-      setInteractions([]);
-      return;
+      return [];
     }
 
     if (!displayViewFeature) {
-      return;
+      return null;
     }
 
     const { layer: { id: layerId } = {} } = view;
 
     if (!layerId) {
-      return;
+      return null;
     }
 
     const layersPaints = getLayers(settings);
@@ -123,13 +121,16 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
         ...interaction,
         interaction: INTERACTION_FN,
         fn: ({
-          feature: { sourceLayer, properties: { _id: propId } },
+          feature: {
+            sourceLayer,
+            properties: { _id: propId },
+          },
         }) => {
           push(generateURI('layer', { layer: sourceLayer, id: propId }));
         },
       }));
 
-    setInteractions(nextInteractions);
+    return nextInteractions;
   }, [displayViewFeature, id, push, settings, view]);
 
   const loadSourceAndLayerById = useCallback(
