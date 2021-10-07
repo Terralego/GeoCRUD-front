@@ -1,9 +1,8 @@
-@import "~quill/dist/quill.snow.css";
+@import '~quill/dist/quill.snow.css';
 
 .ql-snow .ql-tooltip {
-  top: 100% !important;
   left: 50% !important;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, 0);
   z-index: 1;
 }
 
@@ -16,7 +15,7 @@
 }
 
 .ql-editor.ql-blank::after {
-  color: rgba(0,0,0,0.6);
+  color: rgba(0, 0, 0, 0.6);
   content: attr(data-placeholder);
   font-style: italic;
   pointer-events: none;
@@ -25,19 +24,19 @@
 }
 
 @supports (--custom: properties) {
-  .ql-snow .ql-tooltip[data-mode="link"]::before {
+  .ql-snow .ql-tooltip[data-mode='link']::before {
     content: var(--quill-linkLabel);
   }
   .ql-snow .ql-tooltip.ql-editing a.ql-action::after {
     content: var(--quill-linkSave);
-  } 
+  }
 }
 
 .RTEField {
   position: relative;
 
   &__input {
-    background:  #fff;
+    background: #fff;
     min-height: 3rem !important;
   }
 
