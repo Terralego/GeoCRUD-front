@@ -259,6 +259,8 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
           empty: geometries?.[item['source-layer']].geom === null,
         }));
 
+      layersProps.title = t('CRUD.map.controls.layers.title');
+
       if (layersProps.length && relations) {
         addControl({
           control: CONTROL_CUSTOM,
@@ -284,6 +286,7 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
     prevFeature,
     removeControl,
     settings,
+    t,
     view,
   ]);
 

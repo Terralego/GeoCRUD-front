@@ -56,22 +56,29 @@ exports[`snapshots should display relations 1`] = `
       <div
         className="radioGroup layerGroup__item"
       >
-        <Checkbox
-          className="bgLayer-radio"
-          defaultChecked={false}
-          disabled={true}
-          label="Touristics content"
-          onChange={[Function]}
-          value={2}
-        />
-        <Checkbox
-          className="bgLayer-radio"
-          defaultChecked={false}
-          disabled={false}
-          label="POIs"
-          onChange={[Function]}
-          value={17}
-        />
+        <React.Fragment>
+          <h3
+            className="layerGroup__title"
+          >
+            CRUD.map.controls.relations.title
+          </h3>
+          <Checkbox
+            className="bgLayer-radio"
+            defaultChecked={false}
+            disabled={true}
+            label="Touristics content"
+            onChange={[Function]}
+            value={2}
+          />
+          <Checkbox
+            className="bgLayer-radio"
+            defaultChecked={false}
+            disabled={false}
+            label="POIs"
+            onChange={[Function]}
+            value={17}
+          />
+        </React.Fragment>
       </div>
     }
     onClosing={[Function]}

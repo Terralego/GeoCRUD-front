@@ -119,7 +119,11 @@
     "map": {
       "controls": {
         "layers": {
-          "label": "Layer display"
+          "label": "Layer display",
+          "title": "Geographical information of the object"
+        },
+        "relations": {
+          "title": "Other geographical information in the proximity"
         }
       }
     },
