@@ -164,6 +164,7 @@ export class LayersControl extends AbstractMapControl {
           position={Position.BOTTOM_LEFT}
           content={
             <div className="radioGroup layerGroup__item">
+              {layers.title && <h3 className="layerGroup__title">{layers.title}</h3>}
               {layers.map(({ title, id, empty = false, source }) => {
                 const defaultChecked =
                   !empty &&
@@ -183,17 +184,24 @@ export class LayersControl extends AbstractMapControl {
                 );
               })}
 
-              {orderedRelations.map(({ defaultChecked, disabled, geojson, id, label }) => (
-                <Checkbox
-                  className="bgLayer-radio"
-                  defaultChecked={defaultChecked}
-                  disabled={disabled}
-                  key={id}
-                  onChange={event => this.onChangeRelation(event, geojson)}
-                  label={label}
-                  value={id}
-                />
-              ))}
+              {orderedRelations.length > 0 && (
+                <>
+                  <h3 className="layerGroup__title">
+                    {translate('CRUD.map.controls.relations.title')}
+                  </h3>
+                  {orderedRelations.map(({ defaultChecked, disabled, geojson, id, label }) => (
+                    <Checkbox
+                      className="bgLayer-radio"
+                      defaultChecked={defaultChecked}
+                      disabled={disabled}
+                      key={id}
+                      onChange={event => this.onChangeRelation(event, geojson)}
+                      label={label}
+                      value={id}
+                    />
+                  ))}
+                </>
+              )}
             </div>
           }
         >

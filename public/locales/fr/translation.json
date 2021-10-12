@@ -119,7 +119,11 @@
     "map": {
       "controls": {
         "layers": {
-          "label": "Affichage des couches"
+          "label": "Affichage des couches",
+          "title": "Informations géographiques de l'objet"
+        },
+        "relations": {
+          "title": "Autres informations géographiques à proximité"
         }
       }
     },
