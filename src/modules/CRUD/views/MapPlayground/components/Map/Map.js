@@ -261,7 +261,7 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
 
       layersProps.title = t('CRUD.map.controls.layers.title');
 
-      if (layersProps.length && relations) {
+      if (layersProps.length || relations) {
         addControl({
           control: CONTROL_CUSTOM,
           featureID: id,
