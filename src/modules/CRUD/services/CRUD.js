@@ -41,31 +41,26 @@ export const getFirstCrudViewName = (settings = {}) => {
 };
 
 export const getSources = ({ menu = [] }) =>
-  flattenMenu(menu).reduce((sourceList, { layer }) => (
-    (sourceList.some(({ id }) => id === `${layer.id}`))
-      ? sourceList
-      : [
-        ...sourceList,
-        { id: `${layer.id}`, type: 'vector', url: layer.tilejson },
-      ]
-  ), []);
+  flattenMenu(menu).reduce(
+    (sourceList, { layer }) =>
+      sourceList.some(({ id }) => id === `${layer.id}`)
+        ? sourceList
+        : [...sourceList, { id: `${layer.id}`, type: 'vector', url: layer.tilejson }],
+    [],
+  );
 
 export const getLayers = ({ menu = [] }) =>
-  flattenMenu(menu).reduce((
-    layersList,
-    {
-      layer: { id },
-      map_layers: mapLayers,
-    },
-  ) => ([
-    ...layersList,
-    ...mapLayers.map(({ id_layer_vt: name, style, ...props }) => ({
-      id: `CRUD-${name}-${id}`,
-      'source-layer': name,
-      source: `${id}`,
-      ...style,
-      ...props,
-    })),
-  ]), []);
+  flattenMenu(menu).flatMap(({ layer: { id }, map_layers: mapLayers }) =>
+    mapLayers
+      // Temporary: ignore relations
+      .filter(({ view_source: viewSource }) => viewSource !== 'relation')
+      .map(({ id_layer_vt: name, style, ...props }) => ({
+        id: `CRUD-${name}-${id}`,
+        'source-layer': name,
+        source: `${id}`,
+        ...style,
+        ...props,
+      })),
+  );
 
 export default { fetchSettings, getView, getSources, getLayers, getFirstCrudViewName };
