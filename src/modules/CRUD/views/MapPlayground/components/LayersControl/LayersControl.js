@@ -58,6 +58,36 @@ export class LayersControl extends AbstractMapControl {
     });
   }
 
+  getAllRelationData = async ({ method = 'GET', endpoint, body, querystring }) => {
+    const { page = 1, pageSize = 100, ...qs } = querystring || {};
+
+    // Get first page to know total
+    const {
+      results: { features: firstPage },
+      count,
+    } = await Api.request(endpoint, {
+      method,
+      body,
+      querystring: { page, page_size: pageSize, ...qs },
+    });
+
+    const pageCount = Math.ceil(count / pageSize);
+
+    const promises = Array.from({ length: pageCount - 1 }, async (_, index) => {
+      const { results: nextPage } = await Api.request(endpoint, {
+        method,
+        body,
+        querystring: { page: index + 2, page_size: pageSize, ...qs },
+      });
+      return nextPage.features;
+    });
+
+    return {
+      features: [firstPage, ...(await Promise.all(promises))].flat(),
+      type: 'FeatureCollection',
+    };
+  };
+
   orderedRelations = () => {
     const { map, relations } = this.props;
     if (!relations.length) {
@@ -110,8 +140,8 @@ export class LayersControl extends AbstractMapControl {
     if (!map.getSource(currentSourceAndLayerID)) {
       let data = {};
       try {
-        const request = await Api.request(geojson.replace('/api/', ''));
-        data = request.results;
+        const request = await this.getAllRelationData({ endpoint: geojson.replace('/api/', '') });
+        data = request;
       } catch (e) {
         toast.displayError(e.message);
         return;
