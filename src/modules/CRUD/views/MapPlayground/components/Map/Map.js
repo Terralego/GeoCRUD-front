@@ -248,6 +248,7 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
           order: 1,
           position: CONTROLS_TOP_LEFT,
           loadSourceAndLayerById,
+          translate: t,
         });
       }
     } else {
@@ -271,6 +272,7 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
           order: 1,
           position: CONTROLS_TOP_LEFT,
           relations,
+          translate: t,
         });
       }
     }
