@@ -74,6 +74,22 @@ describe('snapshots', () => {
       .create(
         <LayersControl
           {...defaultProps}
+          layers={[
+            {
+              id: 'id1',
+              'source-layer': 'foo',
+              source: '1',
+              title: 'POIs',
+              view_source: 'relation',
+            },
+            {
+              id: 'id2',
+              'source-layer': 'bar',
+              source: '2',
+              title: 'Touristics content',
+              view_source: 'relation',
+            },
+          ]}
           relations={[
             {
               label: 'POIs',

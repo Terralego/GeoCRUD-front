@@ -52,8 +52,6 @@ export const getSources = ({ menu = [] }) =>
 export const getLayers = ({ menu = [] }) =>
   flattenMenu(menu).flatMap(({ layer: { id }, map_layers: mapLayers }) =>
     mapLayers
-      // Temporary: ignore relations
-      .filter(({ view_source: viewSource }) => viewSource !== 'relation')
       .map(({ id_layer_vt: name, style, ...props }) => ({
         id: `CRUD-${name}-${id}`,
         'source-layer': name,
