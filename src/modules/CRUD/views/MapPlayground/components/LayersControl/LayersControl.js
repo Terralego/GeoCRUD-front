@@ -28,7 +28,7 @@ export class LayersControl extends AbstractMapControl {
   };
 
   state = {
-    orderedRelations: [],
+    layers: [],
   };
 
   componentDidMount() {
@@ -38,13 +38,13 @@ export class LayersControl extends AbstractMapControl {
         this.setLayoutProperty(id, map.getLayoutProperty(id, 'visibility') === 'visible');
       }
     });
-    this.orderedRelations();
+    this.manageRelationsLayers();
   }
 
   componentDidMUpdate({ relations: prevRelations }) {
     const { relations } = this.props;
     if (prevRelations !== relations) {
-      this.orderedRelations();
+      this.manageRelationsLayers();
     }
   }
 
@@ -58,14 +58,22 @@ export class LayersControl extends AbstractMapControl {
     });
   }
 
+  manageRelationsLayers = () => {
+    const { layers, relations } = this.props;
+    const nextLayers = layers.map(layer => {
+      if (layer.view_source !== 'relation') {
+        return layer;
+      }
+      return { ...layer, ...relations.find(({ label } = {}) => label === layer.title) };
+    });
+    this.setState({ layers: nextLayers });
+  };
+
   getAllRelationData = async ({ method = 'GET', endpoint, body, querystring }) => {
     const { page = 1, pageSize = 100, ...qs } = querystring || {};
 
     // Get first page to know total
-    const {
-      results: { features: firstPage },
-      count,
-    } = await Api.request(endpoint, {
+    const { results: firstPage, count } = await Api.request(endpoint, {
       method,
       body,
       querystring: { page, page_size: pageSize, ...qs },
@@ -79,87 +87,39 @@ export class LayersControl extends AbstractMapControl {
         body,
         querystring: { page: index + 2, page_size: pageSize, ...qs },
       });
-      return nextPage.features;
+      return nextPage;
     });
 
-    return {
-      features: [firstPage, ...(await Promise.all(promises))].flat(),
-      type: 'FeatureCollection',
-    };
+    return [firstPage, ...(await Promise.all(promises))].flat().map(({ identifier }) => identifier);
   };
 
-  orderedRelations = () => {
-    const { map, relations } = this.props;
-    if (!relations.length) {
-      return;
+  onChange = async ({ target: { value, checked } }, url) => {
+    const { map } = this.props;
+    if (url) {
+      let data = {};
+      try {
+        const request = await this.getAllRelationData({ endpoint: url.replace('/api/', '') });
+        data = request;
+      } catch (e) {
+        toast.displayError(e.message);
+        return;
+      }
+      map.setFilter(value, ['in', '_id', ...data]);
+      this.setState(({ layers: prevLayers }) => ({
+        layers: prevLayers.map(layer =>
+          layer.url !== url
+            ? layer
+            : // To load data once
+              { ...layer, url: null },
+        ),
+      }));
     }
-    const orderedRelations = relations
-      .sort((a, b) => a.order - b.order)
-      .map(({ label, crud_view_pk: id, geojson, empty = false }) => {
-        const layerId = this.getRelationLayerID(id);
-        const defaultChecked = Boolean(
-          map.getSource(layerId) && map.getLayoutProperty(layerId, 'visibility') === 'visible',
-        );
-        return {
-          defaultChecked,
-          disabled: empty,
-          geojson,
-          id,
-          label,
-        };
-      });
-    this.setState({ orderedRelations });
-  };
-
-  onChange = ({ target: { value, checked } }) => {
     this.setLayoutProperty(value, checked);
   };
 
   getRelationLayerID = id => {
     const { featureID } = this.props;
     return `CRUD-${featureID}-relation-${id}`;
-  };
-
-  onChangeRelation = async ({ target: { value, checked } }, geojson) => {
-    const { map, getMapStyle, layers } = this.props;
-    const currentSourceAndLayerID = this.getRelationLayerID(value);
-    this.setState(({ orderedRelations: prevOrderedRelations }) => ({
-      orderedRelations: prevOrderedRelations.map(item =>
-        item.id !== Number(value)
-          ? item
-          : {
-              ...item,
-              defaultChecked: checked,
-            },
-      ),
-    }));
-    if (!checked) {
-      map.setLayoutProperty(currentSourceAndLayerID, 'visibility', 'none');
-      return;
-    }
-    if (!map.getSource(currentSourceAndLayerID)) {
-      let data = {};
-      try {
-        const request = await this.getAllRelationData({ endpoint: geojson.replace('/api/', '') });
-        data = request;
-      } catch (e) {
-        toast.displayError(e.message);
-        return;
-      }
-      map.addSource(currentSourceAndLayerID, {
-        type: 'geojson',
-        data,
-      });
-      map.addLayer(
-        {
-          id: currentSourceAndLayerID,
-          source: currentSourceAndLayerID,
-          ...getMapStyle(Number(value)),
-        },
-        layers?.[0].id,
-      );
-    }
-    map.setLayoutProperty(currentSourceAndLayerID, 'visibility', 'visible');
   };
 
   setLayoutProperty = async (layerId, isVisible) => {
@@ -179,12 +139,15 @@ export class LayersControl extends AbstractMapControl {
   };
 
   render() {
-    const { layers, map, translate } = this.props;
-    const { orderedRelations } = this.state;
+    const { map, translate } = this.props;
+    const { layers } = this.state;
 
-    if (!layers.length && !orderedRelations.length) {
+    if (!layers.length) {
       return null;
     }
+
+    const extraGeomLayers = layers.filter(layer => layer.view_source !== 'relation');
+    const relationsLayers = layers.filter(layer => layer.view_source === 'relation');
 
     return (
       <Tooltip content={translate('CRUD.map.controls.layers.label')} className="layerGroup">
@@ -194,39 +157,47 @@ export class LayersControl extends AbstractMapControl {
           position={Position.BOTTOM_LEFT}
           content={
             <div className="radioGroup layerGroup__item">
-              {layers.title && <h3 className="layerGroup__title">{layers.title}</h3>}
-              {layers.map(({ title, id, empty = false, source }) => {
-                const defaultChecked =
-                  !empty &&
-                  map.getSource(source) &&
-                  map.getLayoutProperty(id, 'visibility') === 'visible';
-
-                return (
-                  <Checkbox
-                    className="bgLayer-radio"
-                    defaultChecked={defaultChecked}
-                    disabled={empty}
-                    key={id}
-                    onChange={this.onChange}
-                    label={title}
-                    value={id}
-                  />
-                );
-              })}
-
-              {orderedRelations.length > 0 && (
+              {extraGeomLayers.length > 0 && (
+                <>
+                  <h3 className="layerGroup__title">
+                    {translate('CRUD.map.controls.layers.title')}
+                  </h3>
+                  {extraGeomLayers.map(({ title, id, empty = false, source }) => {
+                    const defaultChecked =
+                      !empty &&
+                      map.getSource(source) &&
+                      map.getLayoutProperty(id, 'visibility') === 'visible';
+                    return (
+                      <Checkbox
+                        className="bgLayer-radio"
+                        defaultChecked={defaultChecked}
+                        disabled={empty}
+                        key={id}
+                        onChange={this.onChange}
+                        label={title}
+                        value={id}
+                      />
+                    );
+                  })}
+                </>
+              )}
+              {relationsLayers.length > 0 && (
                 <>
                   <h3 className="layerGroup__title">
                     {translate('CRUD.map.controls.relations.title')}
                   </h3>
-                  {orderedRelations.map(({ defaultChecked, disabled, geojson, id, label }) => (
+                  {relationsLayers.map(({ title, id, empty = false, source, url }) => (
                     <Checkbox
                       className="bgLayer-radio"
-                      defaultChecked={defaultChecked}
-                      disabled={disabled}
+                      defaultChecked={
+                        !url &&
+                        map.getSource(source) &&
+                        map.getLayoutProperty(id, 'visibility') === 'visible'
+                      }
+                      disabled={empty}
                       key={id}
-                      onChange={event => this.onChangeRelation(event, geojson)}
-                      label={label}
+                      onChange={event => this.onChange(event, url)}
+                      label={title}
                       value={id}
                     />
                   ))}

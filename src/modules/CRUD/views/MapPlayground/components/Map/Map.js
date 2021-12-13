@@ -257,10 +257,8 @@ const Map = ({ displayViewFeature, triggerFitBound }) => {
         .filter(({ source, main }) => source === `${view.layer.id}` && !main)
         .map(item => ({
           ...item,
-          empty: geometries?.[item['source-layer']].geom === null,
+          empty: geometries?.[item?.['source-layer']]?.geom === null,
         }));
-
-      layersProps.title = t('CRUD.map.controls.layers.title');
 
       if (layersProps.length || relations) {
         addControl({
