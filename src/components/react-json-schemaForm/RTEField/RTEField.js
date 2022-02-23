@@ -132,6 +132,7 @@ export default class RTEField extends Component {
       <div className="RTEField">
         <DefaultLabel {...this.props} />
         <div
+          onDrop={event => event.preventDefault()}
           id={id}
           ref={this.RTERef}
           className="RTEField__input"
