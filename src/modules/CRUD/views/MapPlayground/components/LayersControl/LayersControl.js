@@ -64,7 +64,10 @@ export class LayersControl extends AbstractMapControl {
       if (layer.view_source !== 'relation') {
         return layer;
       }
-      return { ...layer, ...relations.find(({ label } = {}) => label === layer.title) };
+      return {
+        ...layer,
+        ...relations.find(({ id_layer_vt: idLayerVectorTiles } = {}) => idLayerVectorTiles === layer['source-layer'])
+      };
     });
     this.setState({ layers: nextLayers });
   };
