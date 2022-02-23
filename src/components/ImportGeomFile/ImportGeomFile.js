@@ -23,7 +23,7 @@ const ImportGeomFile = props => {
   }, [features, setFeaturesToFitBounds]);
 
   const { t } = useTranslation();
-  const acceptedExtensions = ['gpx', 'kml'];
+  const acceptedExtensions = ['geojson', 'gpx', 'kml'];
 
   return (
     <div className="importGeomFile">
