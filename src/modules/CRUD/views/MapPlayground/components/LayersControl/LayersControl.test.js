@@ -97,6 +97,7 @@ describe('snapshots', () => {
               url: '/api/crud/layers/29/features/foo/relation/11/features/',
               geojson: '/api/crud/layers/29/features/foo/relation/11/features.geojson',
               crud_view_pk: 17,
+              id_layer_vt: 'foo',
               empty: false,
             },
             {
@@ -105,6 +106,7 @@ describe('snapshots', () => {
               url: '/api/crud/layers/29/features/bar/relation/11/features/',
               geojson: '/api/crud/layers/29/features/bar/relation/11/features.geojson',
               crud_view_pk: 2,
+              id_layer_vt: 'bar',
               empty: true,
             },
           ]}
