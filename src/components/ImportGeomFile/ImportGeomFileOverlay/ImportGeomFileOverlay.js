@@ -14,11 +14,16 @@ import {
 } from '../../../utils/geom';
 
 // '@tmcw/togeojson' package can only convert KML, TCX and GPX files for the moment
-const ALL_ACCEPTED_EXTENSIONS = Object.keys(toGeojson).filter(method => !method.endsWith('Gen'));
+const ALL_ACCEPTED_EXTENSIONS = Object.keys({...toGeojson, geojson: {}}).filter(method => !method.endsWith('Gen'));
 
 const getGeojson = (data, fileExtension) => {
   let geom = null;
   let error = null;
+  if (fileExtension === "geojson") {
+    return {
+      geom: JSON.parse(data),
+    }
+  }
   const xml = new DOMParser().parseFromString(data, 'text/xml');
   try {
     const xmlConverter = toGeojson[fileExtension];
@@ -160,7 +165,7 @@ const ImportGeomFileOverlay = ({
               {featuresLength
                 ? <p>{t('importGeomFile.readyToImport', { fileName, count: featuresLength })}</p>
                 : <p>{t('importGeomFile.nothingToImport', { fileName })}</p>}
-              {warnings && (
+              {warnings.length > 0 && (
                 <Callout intent={Intent.PRIMARY}>
                   {/* eslint-disable-next-line react/no-array-index-key */}
                   {warnings.map((warn, index) => <p key={index}>{warn}</p>)}
