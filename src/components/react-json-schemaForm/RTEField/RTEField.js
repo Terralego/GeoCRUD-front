@@ -78,6 +78,8 @@ export default class RTEField extends Component {
 
   onTextChange = (delta, oldDelta, source) => {
     const { schema: { maxLength } } = this.props;
+    // Remove Base64 images (= copy/paste image)
+    this.editor.querySelector(`img[src^="data:image`)?.remove();
     const value = this.editor.innerHTML === '<p><br></p>'
       ? ''
       : this.editor.innerHTML;
